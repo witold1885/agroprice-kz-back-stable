@@ -122,6 +122,9 @@ class User extends Resource
             Text::make('ID', 'name')
                 ->sortable()
                 ->rules('required', 'max:255')
+                ->withMeta(['extraAttributes' => [
+                    'readonly' => true
+                ]])
                 ->default(function ($request) {
                     return $this->getRandomID();
                 }),
