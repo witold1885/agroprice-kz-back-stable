@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\Admin;
 use App\Mail\VerifyMail;
 use Mail;
 use Auth;
