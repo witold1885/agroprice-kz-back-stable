@@ -108,7 +108,7 @@ class AuthController extends Controller
             $admin->notify(
                 NovaNotification::make()
                     ->message($message)
-                    ->action('Перейти', URL::remote(config('app.url') . '/nova/resources/users/' . $user_id)
+                    ->action('Перейти', URL::remote(config('app.url') . '/nova/resources/users/' . $user_id))
                     // ->icon('download')
                     ->type('info')
             );
