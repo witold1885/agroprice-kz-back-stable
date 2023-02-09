@@ -56,7 +56,7 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
-    'spa_url' => env('SPA_URL', 'http://194.110.55.61:8080'),
+    'spa_url' => env('SPA_URL', 'http://localhost:8080'),
 
     /*
     |--------------------------------------------------------------------------
