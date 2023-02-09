@@ -113,7 +113,7 @@ class AuthController extends Controller
 
         if (!$user->email_verified_at) {
             $user->update(['email_verified_at' => date('Y-m-d H:i:s')]);
-            return redirect()->intended('http://localhost:8080/#/profile/complete-register');
+            return redirect()->intended(config('app.spa_url') . '/#/profile/complete-register');
         }
     }
 
