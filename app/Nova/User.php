@@ -148,7 +148,7 @@ class User extends Resource
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
 
-            HasOne::make('Profile')
+            HasOne::make('Profile')->rules('required')
         ];
     }
 
