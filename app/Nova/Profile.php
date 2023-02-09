@@ -96,7 +96,7 @@ class Profile extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'fullname';
 
     /**
      * The columns that should be searched.
@@ -104,7 +104,7 @@ class Profile extends Resource
      * @var array
      */
     public static $search = [
-        'name',
+        'fullname',
         'type',
     ];
 
@@ -122,7 +122,7 @@ class Profile extends Resource
             // Gravatar::make('Avatar'),
             // File::make('Avatar')->disk('public'),
 
-            Text::make(__('Имя/Название'), 'name')
+            Text::make(__('Имя/Название'), 'fullname')
                 ->sortable()
                 ->rules('required', 'max:255'),
 

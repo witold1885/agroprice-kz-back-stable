@@ -90,7 +90,7 @@ class AuthController extends Controller
             'user_id' => $request->user_id,
         ], [
             'user_id' => $request->user_id,
-            'name' => $request->profile['name'],
+            'fullname' => $request->profile['fullname'],
             'type' => $request->profile['type'],
             'phone' => $request->profile['phone'],
         ]);

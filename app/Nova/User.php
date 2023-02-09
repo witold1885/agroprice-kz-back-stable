@@ -7,6 +7,7 @@ use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -129,13 +130,14 @@ class User extends Resource
                     return $this->getRandomID();
                 }),
 
-            Text::make(__('Имя/Название'), function () {
-                return $this->profile->name; 
-            })->onlyOnIndex(),
+            Text::make(__('Имя/Название'), 'fullname')
+                ->rules('required'),
 
-            Text::make(__('Тип профиля'), function () {
-                    return $this->getProfileType($this->profile->type); 
-                })->onlyOnIndex(),
+            Select::make(__('Тип профиля'), 'type')
+                ->options([
+                    'private' => 'Частное лицо',
+                    'company' => 'Организация',
+                ])->rules('required')->displayUsingLabels(),
 
             Text::make(__('E-mail'), 'email')
                 ->sortable()
@@ -148,7 +150,6 @@ class User extends Resource
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
 
-            HasOne::make('Profile')->rules('required')
         ];
     }
 
@@ -171,6 +172,28 @@ class User extends Resource
         else {
             return $this->getRandomID();
         }
+    }
+
+    protected static function fillFields(NovaRequest $request, $model, $fields)
+    {
+        // Get all of our user details data
+        $userProfile = $request->only(['fullname', 'type']);
+
+        // Remove them from the request
+        $request->request->remove('fullname');
+        $request->request->remove('type');
+
+        $result = parent::fillFields($request, $model, $fields);
+
+        // Insert them in the details object after model has been saved.
+        $result[1][] = function () use ($userProfile, $model){
+            $model->profile()->updateOrCreate(
+                [],
+                $userProfile
+            );
+        };
+
+        return $result;
     }
 
     /**

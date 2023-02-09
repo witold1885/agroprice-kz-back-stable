@@ -16,7 +16,7 @@ class CreateUserProfilesTable extends Migration
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->unsigned()->references('id')->on('users')->onDelete('cascade');
-            $table->string('name')->nullable();
+            $table->string('fullname')->nullable();
             $table->enum('type', ['private', 'company'])->nullable();
             $table->string('phone')->nullable();
             $table->string('avatar')->nullable();
