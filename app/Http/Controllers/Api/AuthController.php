@@ -12,6 +12,8 @@ use Mail;
 use Auth;
 use JWTAuth;
 use Str;
+use Laravel\Nova\Notifications\NovaNotification;
+use Laravel\Nova\URL;
 
 class AuthController extends Controller
 {
@@ -67,6 +69,8 @@ class AuthController extends Controller
 
         Mail::to($request->email)->send(new VerifyMail($user->email_verify_token));
 
+        $this->notifyAdmins($user->id, 'Зарегистрирован новый пользователь');
+
         return $this->createNewToken($token);  
     }
 
@@ -90,9 +94,25 @@ class AuthController extends Controller
             'phone' => $request->profile['phone'],
         ]);
 
-        User::where('id', $request->user_id)->update(['password' => bcrypt($request->password)]);
+        $user = User::where('id', $request->user_id)->first();
+        $user->update(['password' => bcrypt($request->password)]);
+
+        $this->notifyAdmins($user->id, 'Пользователь ' . $user->name . ' завершил регистрацию');
 
         return response()->json(['success' => true]);
+    }
+
+    public function notifyAdmins($user_id, $message)
+    {
+        foreach (Admin::all() as $admin) {
+            $admin->notify(
+                NovaNotification::make()
+                    ->message($message)
+                    ->action('Перейти', URL::remote(config('app.url') . '/nova/resources/users/' . $user_id)
+                    // ->icon('download')
+                    ->type('info')
+            );
+        }
     }
 
     protected function createNewToken($token){
