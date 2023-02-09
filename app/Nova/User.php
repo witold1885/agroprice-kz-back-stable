@@ -121,11 +121,14 @@ class User extends Resource
 
             Text::make('ID', 'name')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'max:255')
+                ->default(function ($request) {
+                    return $this->getRandomID();
+                }),
 
             Text::make(__('Имя/Название'), function () {
                 return $this->profile->name; 
-            }) ->onlyOnIndex(),
+            })->onlyOnIndex(),
 
             Text::make(__('Тип профиля'), function () {
                     return $this->getProfileType($this->profile->type); 
@@ -153,6 +156,18 @@ class User extends Resource
             'company' => 'Организация',
         ];
         return $profile_types[$type];
+    }
+
+    public function getRandomID()
+    {
+        $randomID = rand(100001, 999999);
+        $checkExists = \App\Models\User::where('name', $randomID)->first();
+        if (!$checkExists) {
+            return $randomID;
+        }
+        else {
+            return $this->getRandomID();
+        }
     }
 
     /**
