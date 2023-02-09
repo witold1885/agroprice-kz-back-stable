@@ -9,10 +9,13 @@ use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Admin;
 use App\Mail\VerifyMail;
+use App\Mail\ForgotMail;
 use Mail;
 use Auth;
 use JWTAuth;
 use Str;
+use Carbon\Carbon;
+use DB;
 use Laravel\Nova\Notifications\NovaNotification;
 use Laravel\Nova\URL;
 
@@ -25,7 +28,6 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            // return response()->json($validator->errors(), 422);
             return ['success' => false, 'error' => $validator->messages()->first()];
         }
 
@@ -35,7 +37,7 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'error' => 'Пользователь не найден']);
         }
 
-        if (! $token = JWTAuth::attempt($validator->validated())) {
+        if (!$token = JWTAuth::attempt($validator->validated())) {
             return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
@@ -48,8 +50,7 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
 
-        if ($validator->fails()){
-            // return response()->json(['error'=>$validator->errors()->toJson()], 400);
+        if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->messages()->first()]);
         }
 
@@ -81,8 +82,7 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
 
-        if ($validator->fails()){
-            // return response()->json(['error'=>$validator->errors()->toJson()], 400);
+        if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => $validator->messages()->first()]);
         }
 
@@ -96,9 +96,12 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('id', $request->user_id)->first();
-        $user->update(['password' => bcrypt($request->password)]);
+        $prev_status = $user->status;
+        $user->update(['password' => bcrypt($request->password), 'status' => 'active']);
 
-        $this->notifyAdmins($user->id, 'Пользователь ' . $user->name . ' завершил регистрацию');
+        if ($prev_status == 'incomplete') {
+            $this->notifyAdmins($user->id, 'Пользователь ' . $user->name . ' завершил регистрацию');
+        }
 
         return response()->json(['success' => true]);
     }
@@ -138,6 +141,115 @@ class AuthController extends Controller
         }
     }
 
+    public function forgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()){
+            return response()->json(['success' => false, 'error' => $validator->messages()->first()]);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'error' => 'Пользователь не найден']);
+        }
+
+        $token = $this->getForgotToken($user->email);
+        Mail::to($request->email)->send(new ForgotMail($token));
+
+        return response()->json(['success' => true]);
+    }
+
+    public function getForgotToken($email)
+    {
+        $oldToken = DB::table('password_resets')->where('email', $email)->first();
+
+        if ($oldToken) {
+            return $oldToken->token;
+        }
+
+        $token = Str::random(40);
+        $this->saveToken($token, $email);
+        return $token;
+    }
+
+    private function saveToken($token, $email)
+    {
+        DB::table('password_resets')->insert([
+            'email' => $email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+    }
+
+    private function checkToken($token)
+    {
+        return DB::table('password_resets')->where('token', $token)->first();
+    }
+
+    private function deleteToken($token)
+    {
+        DB::table('password_resets')->where('token', $token)->delete();
+    }
+
+    public function resetPassword($token)
+    {
+        $existToken = $this->checkToken($token);
+        if (!$existToken) {
+            return abort(404);
+        }
+
+        $user = User::where('email', $existToken->email)->first();
+
+        if (!$user) {
+            return abort(404);               
+        }
+
+        return redirect()->intended(config('app.spa_url') . '/#/reset-password/' . $token);
+    }
+
+    public function checkPasswordResetToken($token)
+    {
+        return response()->json(['existToken' => $this->checkToken($token)]);        
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+            'token' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => $validator->messages()->first()]);
+        }
+
+        $existToken = $this->checkToken($request->token);
+        if (!$existToken) {
+            return response()->json(['success' => false, 'error' => 'Ключ для восстановления пароля не найден']);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'error' => 'Пользователь не найден']);
+        }
+
+        if ($existToken->email != $user->email) {
+            return response()->json(['success' => false, 'error' => 'Не найдено соответствие ключа указанному пользователю']);
+        }
+
+        $user->update(['password' => bcrypt($request->password)]);
+
+        $this->deleteToken($request->token);
+
+        return response()->json(['success' => true]);        
+    }
+
     public function getUser(Request $request)
     {
         return response()->json($request->user());
@@ -149,8 +261,6 @@ class AuthController extends Controller
 
     public function logout()
     {
-         // Auth::guard('api')->logout();
-        // JWTAuth::invalidate(JWTAuth::getToken());
         auth()->logout();
 
         return response()->json(['success' => true], 200);

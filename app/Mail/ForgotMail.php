@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class VerifyMail extends Mailable
+class ForgotMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,8 +20,8 @@ class VerifyMail extends Mailable
      */
     public function __construct($token)
     {
-        $this->url = config('app.url') . '/api/verify/' . $token;
-        $this->subject = "Подтверждение регистрации пользователя";
+        $this->url = config('app.url') . '/api/password/reset/' . $token;
+        $this->subject = "Восстановление пароля пользователя";
     }
 
     /**
@@ -32,7 +32,7 @@ class VerifyMail extends Mailable
     public function build()
     {
         return $this->from(env('MAIL_USERNAME'), config('app.name'))
-                    ->markdown('mail.verify')
+                    ->markdown('mail.forgot')
                     ->subject($this->subject)
                     ->with(['url' => $this->url]);
     }

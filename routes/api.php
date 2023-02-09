@@ -24,6 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('verify/{token}', [AuthController::class, 'verifyEmail']);
+    Route::post('password/forgot', [AuthController::class, 'forgotPassword']);
+    Route::get('password/reset/{token}', [AuthController::class, 'resetPassword']);
+    Route::get('password/check/{token}', [AuthController::class, 'checkPasswordResetToken']);
+    Route::post('password/change', [AuthController::class, 'changePassword']);
 
     Route::group(['middleware'=>'jwt.verify'],function(){
         Route::get('user', [AuthController::class, 'getUser']);

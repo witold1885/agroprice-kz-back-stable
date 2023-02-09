@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -119,6 +120,17 @@ class Admin extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            Text::make(__('Роль'), function () {
+                    return $this->getRoleName($this->role); 
+                })->onlyOnIndex(),
+
+            Select::make(__('Роль'), 'role')
+                ->options([
+                    'administrator' => 'Администратор',
+                    'moderator' => 'Модератор',
+                    'manager' => 'Менеджер',
+                ])->displayUsingLabels(),
+
             Text::make(__('E-mail'), 'email')
                 ->sortable()
                 ->rules('required', 'email', 'max:254')
@@ -131,6 +143,16 @@ class Admin extends Resource
                 ->updateRules('nullable', Rules\Password::defaults()),
 
         ];
+    }
+
+    private function getRoleName($role)
+    {
+        $roles = [
+            'administrator' => 'Администратор',
+            'moderator' => 'Модератор',
+            'manager' => 'Менеджер',
+        ];
+        return $roles[$role];
     }
 
     /**
