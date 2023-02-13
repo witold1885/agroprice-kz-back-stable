@@ -13,6 +13,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "coderello/laravel-nova-lang": "^2.0",
+        "emilianotisato/nova-tinymce": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",

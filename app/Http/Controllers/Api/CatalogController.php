@@ -42,4 +42,15 @@ class CatalogController extends Controller
         return array_reverse($path);
     }
 
+    public function getMainCategories()
+    {
+        try {
+            $categories = Category::where('parent_id', 0)->get();
+
+            return response()->json(['success' => true, 'categories' => $categories]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }

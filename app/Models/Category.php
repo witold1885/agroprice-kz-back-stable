@@ -14,6 +14,11 @@ class Category extends Model
         'name',
         'image',
         'url',
+        'description',
+        'meta_heading',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     public function children() {

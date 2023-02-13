@@ -5,6 +5,8 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
+use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -136,7 +138,22 @@ class Category extends Resource
                 ->hideFromIndex(),
 
             Text::make(__('URL'), 'url')
-                ->onlyOnDetail(),
+                ->hideFromIndex(),
+
+            NovaTinyMCE::make(__('Описание'), 'description')
+                ->hideFromIndex(),
+
+            Text::make(__('H1'), 'meta_heading')
+                ->hideFromIndex(),
+
+            Text::make(__('Meta Title'), 'meta_title')
+                ->hideFromIndex(),
+
+            Textarea::make(__('Meta Description'), 'meta_description')
+                ->hideFromIndex(),
+
+            Textarea::make(__('Meta Keywords'), 'meta_keywords')
+                ->hideFromIndex(),
         ];
     }
 
@@ -168,7 +185,17 @@ class Category extends Resource
         $modelObject = $fillFields[0];
 
         // add extra attribute
-        $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
+        if (!$modelObject->url) {
+            $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
+        }
+
+        if (!$modelObject->meta_heading) {
+            $modelObject->meta_heading = $modelObject->name;
+        }
+
+        if (!$modelObject->meta_title) {
+            $modelObject->meta_title = $modelObject->name;
+        }
 
         return $fillFields;
     }
