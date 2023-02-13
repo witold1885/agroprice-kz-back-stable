@@ -37,5 +37,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'catalog'], function () {
         Route::get('category/{url}', [CatalogController::class, 'getCategory']);
         Route::get('main-categories', [CatalogController::class, 'getMainCategories']);
+        Route::get('menu-categories', [CatalogController::class, 'getMenuCategories']);
 
     });

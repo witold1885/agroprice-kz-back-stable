@@ -53,4 +53,29 @@ class CatalogController extends Controller
         }
     }
 
+    public function getMenuCategories()
+    {
+        try {
+            $menu_categories = [];
+            $categories = Category::where('parent_id', 0)->get();
+            foreach ($categories as $category) {
+                $menu_category = $category;
+                $menu_subcategories = [];
+                $subcategories = Category::where('parent_id', $category->id)->get();
+                foreach ($subcategories as $subcategory) {
+                    $menu_subcategory = $subcategory;
+                    $subsubcategories = Category::where('parent_id', $subcategory->id)->get();
+                    $menu_subcategory->subsubcategories = $subsubcategories;
+                    $menu_subcategories[] = $menu_subcategory;
+                }
+                $menu_category->subcategories = $menu_subcategories;
+                $menu_categories[] = $menu_category;
+            }
+
+            return response()->json(['success' => true, 'categories' => $menu_categories]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
