@@ -3,16 +3,14 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Password;
-use Laravel\Nova\Fields\HasOne;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Models\Helper;
 
-class User extends Resource
+class Category extends Resource
 {
     /**
      * Get the displayable label of the resource.
@@ -21,7 +19,7 @@ class User extends Resource
      */
     public static function label()
     {
-        return __('Пользователи');
+        return __('Категории');
     }
 
     /**
@@ -31,7 +29,7 @@ class User extends Resource
      */
     public static function singularLabel()
     {
-        return __('Пользователь');
+        return __('Категория');
     }
 
     /**
@@ -41,7 +39,7 @@ class User extends Resource
      */
     public static function genitiveLabel()
     {
-        return __('Пользователя');
+        return __('Категории');
     }
     
     /**
@@ -51,7 +49,7 @@ class User extends Resource
      */
     public static function accusativeLabel()
     {
-        return __('Пользователя');
+        return __('Категорию');
     }
     
     /**
@@ -61,7 +59,7 @@ class User extends Resource
      */
     public static function genitivePluralLabel()
     {
-        return __('Пользователей');
+        return __('Категорий');
     }
     
     /**
@@ -71,7 +69,7 @@ class User extends Resource
      */
     public static function createButtonLabel()
     {
-        return __('Создать пользователя');
+        return __('Создать категорию');
     }
 
     /**
@@ -81,15 +79,15 @@ class User extends Resource
      */
     public static function updateButtonLabel()
     {
-        return __('Обновить пользователя');
+        return __('Обновить категорию');
     }
 
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\User>
+     * @var class-string<\App\Models\Category>
      */
-    public static $model = \App\Models\User::class;
+    public static $model = \App\Models\Category::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -104,7 +102,7 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'email',
+        'id', 'name'
     ];
 
     /**
@@ -118,82 +116,61 @@ class User extends Resource
         return [
             // ID::make()->sortable(),
 
-            // Gravatar::make()->maxWidth(50),
-
-            Text::make('ID', 'name')
+            Text::make(__('Название'), 'name')
                 ->sortable()
-                ->rules('required', 'max:255')
-                ->withMeta(['extraAttributes' => [
-                    'readonly' => true
-                ]])
-                ->default(function ($request) {
-                    return $this->getRandomID();
-                }),
+                ->rules('required', 'max:255'),
 
-            Text::make(__('Имя/Название'), 'fullname')
-                ->rules('required'),
+            Select::make(__('Родительская категория'), 'parent_id')
+                ->options($this->getCategories())
+                ->default(0)
+                ->displayUsingLabels()
+                ->onlyOnForms(),
 
-            Select::make(__('Тип профиля'), 'type')
-                ->options([
-                    'private' => 'Частное лицо',
-                    'company' => 'Организация',
-                ])->rules('required')->displayUsingLabels(),
+            Text::make(__('Путь'), function () {
+                    return implode(' > ', array_reverse($this->getPath($this->id))); 
+                })->sortable()->onlyOnIndex(),
 
-            Text::make(__('E-mail'), 'email')
-                ->sortable()
-                ->rules('required', 'email', 'max:254')
-                ->creationRules('unique:users,email')
-                ->updateRules('unique:users,email,{{resourceId}}'),
+            Image::make('Изображение', 'image')
+                ->disk('public')
+                ->path('category')
+                ->hideFromIndex(),
 
-            Password::make(__('Пароль'), 'password')
-                ->onlyOnForms()
-                ->creationRules('required', Rules\Password::defaults())
-                ->updateRules('nullable', Rules\Password::defaults()),
-
+            Text::make(__('URL'), 'url')
+                ->onlyOnDetail(),
         ];
     }
 
-    private function getProfileType($type)
+    private function getCategories()
     {
-        $profile_types = [
-            'private' => 'Частное лицо',
-            'company' => 'Организация',
-        ];
-        return $profile_types[$type];
+        $categories = \App\Models\Category::all();
+        $categoriesArray[0] = 'Нет';
+        foreach ($categories as $category) {
+            $categoriesArray[$category->id] = $category->name;
+        }
+        return $categoriesArray;
     }
 
-    private function getRandomID()
+    private function getPath($id, $path = [])
     {
-        $randomID = rand(100001, 999999);
-        $checkExists = \App\Models\User::where('name', $randomID)->first();
-        if (!$checkExists) {
-            return $randomID;
+        $category = \App\Models\Category::find($id);
+        $path[] = $category->name;
+        if ($category->parent_id) {
+            return $this->getPath($category->parent_id, $path);
         }
-        else {
-            return $this->getRandomID();
-        }
+        return $path;
     }
 
     protected static function fillFields(NovaRequest $request, $model, $fields)
     {
-        // Get all of our user details data
-        $userProfile = $request->only(['fullname', 'type']);
+        $fillFields = parent::fillFields($request, $model, $fields);
 
-        // Remove them from the request
-        $request->request->remove('fullname');
-        $request->request->remove('type');
+        // first element should be model object
+        $modelObject = $fillFields[0];
 
-        $result = parent::fillFields($request, $model, $fields);
+        // add extra attribute
+        $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
 
-        // Insert them in the details object after model has been saved.
-        $result[1][] = function () use ($userProfile, $model){
-            $model->profile()->updateOrCreate(
-                [],
-                $userProfile
-            );
-        };
-
-        return $result;
+        return $fillFields;
     }
 
     /**

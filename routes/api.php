@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CatalogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('password/check/{token}', [AuthController::class, 'checkPasswordResetToken']);
     Route::post('password/change', [AuthController::class, 'changePassword']);
 
-    Route::group(['middleware'=>'jwt.verify'],function(){
+    Route::group(['middleware'=>'jwt.verify'], function() {
         Route::get('user', [AuthController::class, 'getUser']);
+    });
+
+    Route::group(['prefix' => 'catalog'], function () {
+        Route::get('category/{url}', [CatalogController::class, 'getCategory']);
+
     });
