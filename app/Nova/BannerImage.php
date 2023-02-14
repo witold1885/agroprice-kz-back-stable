@@ -4,13 +4,12 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Gravatar;
-use Laravel\Nova\Fields\File;
-use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Profile extends Resource
+class BannerImage extends Resource
 {
     public static $displayInNavigation = false;
 
@@ -21,7 +20,7 @@ class Profile extends Resource
      */
     public static function label()
     {
-        return __('Профили');
+        return __('Изображения');
     }
 
     /**
@@ -31,7 +30,7 @@ class Profile extends Resource
      */
     public static function singularLabel()
     {
-        return __('Профиль');
+        return __('Изображение');
     }
 
     /**
@@ -41,7 +40,7 @@ class Profile extends Resource
      */
     public static function genitiveLabel()
     {
-        return __('Профиля');
+        return __('Изображения');
     }
     
     /**
@@ -51,7 +50,7 @@ class Profile extends Resource
      */
     public static function accusativeLabel()
     {
-        return __('Профиль');
+        return __('Изображение');
     }
     
     /**
@@ -61,7 +60,7 @@ class Profile extends Resource
      */
     public static function genitivePluralLabel()
     {
-        return __('Профилей');
+        return __('Изображений');
     }
     
     /**
@@ -71,7 +70,7 @@ class Profile extends Resource
      */
     public static function createButtonLabel()
     {
-        return __('Создать профиль');
+        return __('Создать изображение');
     }
 
     /**
@@ -81,22 +80,22 @@ class Profile extends Resource
      */
     public static function updateButtonLabel()
     {
-        return __('Обновить профиль');
+        return __('Обновить изображение');
     }
 
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Profile>
+     * @var class-string<\App\Models\BannerImage>
      */
-    public static $model = \App\Models\UserProfile::class;
+    public static $model = \App\Models\BannerImage::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'fullname';
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -104,8 +103,7 @@ class Profile extends Resource
      * @var array
      */
     public static $search = [
-        'fullname',
-        'type',
+        'id',
     ];
 
     /**
@@ -119,18 +117,15 @@ class Profile extends Resource
         return [
             // ID::make()->sortable(),
 
-            // Gravatar::make('Avatar'),
-            // File::make('Avatar')->disk('public'),
+            Image::make('Файл', 'path')
+                ->disk('public')
+                ->path('banners'),
 
-            Text::make(__('Имя/Название'), 'fullname')
-                ->sortable()
-                ->rules('required', 'max:255'),
+            Boolean::make(__('Активно'), 'active')->default(true),
 
-            Select::make(__('Тип профиля'), 'type')
-                ->options([
-                    'private' => 'Частное лицо',
-                    'company' => 'Организация',
-                ])->displayUsingLabels()
+            Date::make(__('Показывать с'), 'date_from'),
+
+            Date::make(__('Показывать до'), 'date_to'),
 
         ];
     }

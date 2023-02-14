@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CatalogController;
+use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\InfoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +40,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('category/{url}', [CatalogController::class, 'getCategory']);
         Route::get('main-categories', [CatalogController::class, 'getMainCategories']);
         Route::get('menu-categories', [CatalogController::class, 'getMenuCategories']);
+    });
 
+    Route::group(['prefix' => 'locations'], function () {
+        Route::get('get', [LocationController::class, 'getLocations']);
+    });
+
+    Route::group(['prefix' => 'info'], function () {
+        // Route::get('banners/get', [LocationController::class, 'getBanners']);
+        Route::get('banner/{code}', [InfoController::class, 'getBanner']);
     });
