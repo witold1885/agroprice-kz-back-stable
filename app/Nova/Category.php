@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Textarea;
 use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
 
@@ -154,6 +155,8 @@ class Category extends Resource
 
             Textarea::make(__('Meta Keywords'), 'meta_keywords')
                 ->hideFromIndex(),
+
+            HasMany::make('FilterGroups')
         ];
     }
 

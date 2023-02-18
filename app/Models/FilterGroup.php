@@ -18,4 +18,9 @@ class FilterGroup extends Model
     {
         return $this->hasMany(Filter::class);
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_filter_groups');
+    }
 }

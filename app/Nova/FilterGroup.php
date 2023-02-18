@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class FilterGroup extends Resource
@@ -124,7 +125,9 @@ class FilterGroup extends Resource
                     'checkbox' => 'Перечень значений',
                 ])->rules('required')->displayUsingLabels(),
 
-            HasMany::make('Filters')
+            HasMany::make('Filters'),
+
+            BelongsToMany::make('Categories')
 
         ];
     }
