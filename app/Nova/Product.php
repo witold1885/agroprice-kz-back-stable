@@ -11,7 +11,7 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsToMany;
-use Techouse\SelectAutoComplete\SelectAutoComplete;
+// use Techouse\SelectAutoComplete\SelectAutoComplete;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Product extends Resource
@@ -130,7 +130,7 @@ class Product extends Resource
                 ->rules('required')
                 ->onlyOnForms(),*/
 
-            BelongsToMany::make('Categories'),
+            BelongsToMany::make(__('Категории'), 'categories', Category::class),
 
             Textarea::make(__('Описание'), 'description')
                 ->rules('required')

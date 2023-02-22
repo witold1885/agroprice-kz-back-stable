@@ -22,12 +22,16 @@ class Category extends Model
     ];
 
     public function children() {
-        return $this->hasMany(Category::class,'parent_id');
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     public function parent() {
-        return $this->belongsTo(Category::class,'parent_id');
+        return $this->belongsTo(Category::class, 'parent_id');
     }
+
+    /*public function products() {
+        return $this->belongsToMany(Product::class, 'product_categories');
+    }*/
 
     public function filterGroups()
     {
