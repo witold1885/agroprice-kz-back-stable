@@ -78,4 +78,15 @@ class CatalogController extends Controller
         }
     }
 
+    public function getChildCategories($parent_id)
+    {
+        try {
+            $categories = Category::where('parent_id', $parent_id)->get();
+
+            return response()->json(['success' => true, 'categories' => $categories]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
