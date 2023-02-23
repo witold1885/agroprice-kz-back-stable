@@ -131,7 +131,12 @@ class Product extends Resource
                 ->rules('required')
                 ->onlyOnForms(),*/
 
-            BelongsToMany::make(__('Категории'), 'categories', Category::class),
+            BelongsToMany::make(__('Категории'), 'categories', Category::class)
+                ->actions(function () {
+                    return [
+                        new Actions\MarkAsActive,
+                    ];
+                }),
 
             Textarea::make(__('Описание'), 'description')
                 ->rules('required')

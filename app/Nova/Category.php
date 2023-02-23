@@ -165,7 +165,7 @@ class Category extends Resource
         $categories = \App\Models\Category::all();
         $categoriesArray[0] = 'Нет';
         foreach ($categories as $category) {
-            $categoriesArray[$category->id] = $category->name;
+            $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
         }
         return $categoriesArray;
     }
