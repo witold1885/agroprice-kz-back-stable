@@ -108,6 +108,11 @@ class User extends Resource
         'name', 'email',
     ];
 
+    public function title()
+    {
+        return $this->profile->fullname;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
