@@ -45,4 +45,16 @@ class LocationController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
+    public function searchLocations($search)
+    {
+        try {
+            $locations = Location::where('city', 'like', $search . '%')->limit(10)->get();
+            
+            return response()->json(['success' => true, 'locations' => $locations]);
+
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 }

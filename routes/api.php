@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::group(['prefix' => 'locations'], function () {
         Route::get('get', [LocationController::class, 'getLocations']);
+        Route::get('search/{search}', [LocationController::class, 'searchLocations']);
     });
 
     Route::group(['prefix' => 'info'], function () {
