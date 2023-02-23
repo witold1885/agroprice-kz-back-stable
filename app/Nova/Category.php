@@ -173,6 +173,7 @@ class Category extends Resource
         foreach ($categories as $category) {
             $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
         }
+        sort($categoriesArray);
         return $categoriesArray;
     }
 
