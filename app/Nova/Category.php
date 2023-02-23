@@ -108,6 +108,11 @@ class Category extends Resource
         'id', 'name'
     ];
 
+    public function title()
+    {
+        return implode(' > ', array_reverse($this->getPath($this->id)));
+    }
+
     /**
      * Get the fields displayed by the resource.
      *

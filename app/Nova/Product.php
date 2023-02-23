@@ -10,8 +10,9 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\MultiSelect;
 use Laravel\Nova\Fields\BelongsToMany;
-// use Techouse\SelectAutoComplete\SelectAutoComplete;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Log;
 
@@ -121,17 +122,18 @@ class Product extends Resource
         return [
             // ID::make()->sortable(),
 
+            /*Select::make(__('Пользователь'), 'user_id')
+                ->options($this->getUsers())
+                ->displayUsingLabels()
+                ->rules('required'),*/
+
+            BelongsTo::make(__('Пользователь'), 'user', User::class)->searchable(),
+
             Text::make(__('Название'), 'name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            /*Select::make(__('Категория'), 'parent_id')
-                ->options($this->getCategories())
-                ->displayUsingLabels()
-                ->rules('required')
-                ->onlyOnForms(),*/
-
-            BelongsToMany::make(__('Категории'), 'categories', Category::class),
+            BelongsToMany::make(__('Категории'), 'categories', Category::class)->searchable(),
 
             Textarea::make(__('Описание'), 'description')
                 ->rules('required')
@@ -143,24 +145,34 @@ class Product extends Resource
             Boolean::make(__('Договорная'), 'price_negotiable')->default(false),
 
             Select::make(__('Местоположение'), 'location_id')
+                ->searchable()
                 ->options($this->getLocations())
                 ->displayUsingLabels()
                 ->rules('required')
-                ->onlyOnForms(),
+                ->hideFromIndex(),
 
             Text::make(__('Контактное лицо'), 'person')
-                ->rules('required'),
+                ->hideFromIndex(),
 
             Text::make(__('Email-адрес'), 'email')
-                ->rules('required', 'email'),
+                ->hideFromIndex()
+                ->rules('email'),
 
             Text::make(__('Номер телефона'), 'phone')
-                ->rules('required'),
+                ->hideFromIndex(),
 
             HasMany::make(__('Изображения'), 'productImages', ProductImage::class),
 
-
         ];
+    }
+
+    private function getUsers()
+    {
+        $users = \App\Models\User::all();
+        foreach ($users as $user) {
+            $usersArray[$user->id] = $user->profile->fullname;
+        }
+        return $usersArray;
     }
 
     private function getCategories()
@@ -168,14 +180,24 @@ class Product extends Resource
         $categories = \App\Models\Category::all();
         $categoriesArray[0] = 'Нет';
         foreach ($categories as $category) {
-            $categoriesArray[$category->id] = $category->name;
+            $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
         }
         return $categoriesArray;
     }
 
+    private function getPath($id, $path = [])
+    {
+        $category = \App\Models\Category::find($id);
+        $path[] = $category->name;
+        if ($category->parent_id) {
+            return $this->getPath($category->parent_id, $path);
+        }
+        return $path;
+    }
+
     private function getLocations()
     {
-        $locations = \App\Models\Location::all();
+        $locations = \App\Models\Location::orderBy('city', 'asc')->get();
         $locationsArray[0] = 'Нет';
         foreach ($locations as $location) {
             $locationsArray[$location->id] = $location->city;
