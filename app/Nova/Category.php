@@ -169,11 +169,11 @@ class Category extends Resource
     private function getCategories()
     {
         $categories = \App\Models\Category::all();
-        $categoriesArray[0] = 'Нет';
         foreach ($categories as $category) {
             $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
         }
         sort($categoriesArray);
+        $categoriesArray[0] = 'Нет';
         return $categoriesArray;
     }
 
