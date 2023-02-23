@@ -13,6 +13,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\BelongsToMany;
 // use Techouse\SelectAutoComplete\SelectAutoComplete;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Log;
 
 class Product extends Resource
 {
@@ -184,23 +185,25 @@ class Product extends Resource
 
     protected static function fillFields(NovaRequest $request, $model, $fields)
     {
-        // Get all of our user details data
-        $productContact = $request->only(['person', 'email', 'phone']);
+        if (isset($request['person']) || isset($request['email']) || isset($request['phone'])) {
+            $productContact = $request->only(['person', 'email', 'phone']);
 
-        // Remove them from the request
-        $request->request->remove('person');
-        $request->request->remove('email');
-        $request->request->remove('phone');
+            $request->request->remove('person');
+            $request->request->remove('email');
+            $request->request->remove('phone');
 
-        $result = parent::fillFields($request, $model, $fields);
+            $result = parent::fillFields($request, $model, $fields);
 
-        // Insert them in the details object after model has been saved.
-        $result[1][] = function () use ($productContact, $model){
-            $model->contact()->updateOrCreate(
-                [],
-                $productContact
-            );
-        };
+            $result[1][] = function () use ($productContact, $model) {
+                $model->contact()->updateOrCreate(
+                    [],
+                    $productContact
+                );
+            };
+        }
+        else {
+            $result = parent::fillFields($request, $model, $fields);
+        }
 
         return $result;
     }
