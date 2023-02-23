@@ -129,6 +129,7 @@ class Category extends Resource
                 ->rules('required', 'max:255'),
 
             Select::make(__('Родительская категория'), 'parent_id')
+                ->searchable()
                 ->options($this->getCategories())
                 ->default(0)
                 ->displayUsingLabels()
