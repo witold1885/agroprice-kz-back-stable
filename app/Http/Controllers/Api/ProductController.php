@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductContact;
+use App\Models\Helper;
 use DB;
 use Log;
 
@@ -18,6 +19,7 @@ class ProductController extends Controller
     public function saveProduct(Request $request)
     {
         try {
+            // Log::info($request);
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'description' => 'required',
@@ -34,10 +36,13 @@ class ProductController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,
-                'price_negotiable' => $request->price_negotiable,
+                'price_negotiable' => $request->price_negotiable == 'true' ? 1 : 0,
                 'location_id' => $request->location_id,
                 'status' => $request->status, // draft || moderating
             ]);
+
+            $productUrl = Helper::transliterate($product->name, 'ru') . '-' . $product->id;
+            $product->update(['url' => $productUrl]);
 
             foreach ($request->categories as $category) {                
                 DB::table('product_categories')->updateOrInsert([
@@ -69,6 +74,21 @@ class ProductController extends Controller
                 'email' => $contact['email'],
                 'phone' => $contact['phone'],
             ]);
+            // Log::info($request->images);
+            foreach ($request->images as $image) {
+                $file = $image['file'];
+                $extension = $file->getClientOriginalExtension();                
+                $filename = date('y') . '-' . date('m') . '-' . date('d') . '-' . $productUrl . '-' . $image['num'] . '.' . $extension;
+                $path = $file->storeAs('products', $filename);
+                ProductImage::updateOrCreate([
+                    'product_id' => $product->id,
+                    'path' => $path,
+                ], [
+                    'product_id' => $product->id,
+                    'path' => $path,
+                    'order' => $image['num'],
+                ]);
+            }
 
             return response()->json(['success' => true]);
         } catch (\ErrorException $e) {

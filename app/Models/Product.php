@@ -13,6 +13,7 @@ class Product extends Model
         'user_id',
         'name',
         'description',
+        'url',
         'price',
         'price_negotiable',
         'location_id',
