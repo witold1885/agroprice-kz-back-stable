@@ -10,6 +10,7 @@ class ProductContact extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_id',
         'person',
         'email',
         'phone',

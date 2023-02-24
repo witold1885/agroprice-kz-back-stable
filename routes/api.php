@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\InfoController;
+use App\Http\Controllers\Api\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,4 +52,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'info'], function () {
         // Route::get('banners/get', [LocationController::class, 'getBanners']);
         Route::get('banner/{code}', [InfoController::class, 'getBanner']);
+    });
+
+    Route::group(['prefix' => 'product'], function () {
+        Route::post('save', [ProductController::class, 'saveProduct']);
     });
