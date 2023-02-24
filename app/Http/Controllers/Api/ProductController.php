@@ -11,6 +11,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductContact;
 use DB;
+use Log;
 
 class ProductController extends Controller
 {
@@ -40,21 +41,33 @@ class ProductController extends Controller
 
             foreach ($request->categories as $category) {                
                 DB::table('product_categories')->updateOrInsert([
-                    'category_id' => $category->id,
+                    'category_id' => $category['id'],
                     'product_id' => $product->id,
                 ], [
-                    'category_id' => $category->id,
+                    'category_id' => $category['id'],
                     'product_id' => $product->id,
                 ], ['timestamps' => false]);
+            }
+
+            $contact = $request->contact;
+            $user = User::find($request->user_id);
+            if (!$contact['person']) {
+                $contact['person'] = $user ? $user->profile->fullname : '';
+            }
+            if (!$contact['email']) {
+                $contact['email'] = $user ? $user->email : '';
+            }
+            if (!$contact['phone']) {
+                $contact['phone'] = $user ? $user->profile->phone : '';
             }
 
             ProductContact::updateOrCreate([
                 'product_id' => $product->id,
             ], [
                 'product_id' => $product->id,
-                'person' => $request->contact['person'],
-                'email' => $request->contact['email'],
-                'phone' => $request->contact['phone'],
+                'person' => $contact['person'],
+                'email' => $contact['email'],
+                'phone' => $contact['phone'],
             ]);
 
             return response()->json(['success' => true]);
