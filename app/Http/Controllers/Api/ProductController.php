@@ -44,12 +44,13 @@ class ProductController extends Controller
             $productUrl = Helper::transliterate($product->name, 'ru') . '-' . $product->id;
             $product->update(['url' => $productUrl]);
 
-            foreach ($request->categories as $category) {                
+            foreach ($request->categories as $category) {
+                $categoryArray = json_decode($category, true);
                 DB::table('product_categories')->updateOrInsert([
-                    'category_id' => $category['id'],
+                    'category_id' => $categoryArray['id'],
                     'product_id' => $product->id,
                 ], [
-                    'category_id' => $category['id'],
+                    'category_id' => $categoryArray['id'],
                     'product_id' => $product->id,
                 ], ['timestamps' => false]);
             }
@@ -75,24 +76,25 @@ class ProductController extends Controller
                 'phone' => $contact['phone'],
             ]);
             // Log::info($request->images);
+            $order = 1;
             foreach ($request->images as $image) {
-                $file = $image['file'];
-                $extension = $file->getClientOriginalExtension();                
-                $filename = date('y') . '-' . date('m') . '-' . date('d') . '-' . $productUrl . '-' . $image['num'] . '.' . $extension;
-                $path = $file->storeAs('products', $filename);
+                $extension = $image->getClientOriginalExtension();                
+                $filename = date('y') . '-' . date('m') . '-' . date('d') . '-' . $productUrl . '-' . $order . '.' . $extension;
+                $path = $image->move(storage_path('app/public/products'), $filename);
                 ProductImage::updateOrCreate([
                     'product_id' => $product->id,
-                    'path' => $path,
+                    'path' => 'products/' . $filename,
                 ], [
                     'product_id' => $product->id,
-                    'path' => $path,
-                    'order' => $image['num'],
+                    'path' => 'products/' . $filename,
+                    'order' => $order,
                 ]);
+                $order++;
             }
 
             return response()->json(['success' => true]);
         } catch (\ErrorException $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'error' => $e->getMessage(), 'line' => $e->getLine()]);
         }
     }
 }
