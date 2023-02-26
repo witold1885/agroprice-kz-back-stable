@@ -182,6 +182,7 @@ class Category extends Resource
             $categories = \App\Models\Category::get()->toArray();
             Cache::store('redis')->put('categories', $categories, 3600);
         }
+        Log::info(Cache::store('redis')->get('categories'));
         $categoriesArray = [];
         foreach ($categories as $category) {
             $categoriesArray[$category['id']] = implode(' > ', array_reverse($this->getPath($category['id'])));
