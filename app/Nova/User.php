@@ -195,11 +195,13 @@ class User extends Resource
     protected static function fillFields(NovaRequest $request, $model, $fields)
     {
         // Get all of our user details data
-        $userProfile = $request->only(['fullname', 'type']);
+        $userProfile = $request->only(['fullname', 'type', 'phone', 'whatsapp']);
 
         // Remove them from the request
         $request->request->remove('fullname');
         $request->request->remove('type');
+        $request->request->remove('phone');
+        $request->request->remove('whatsapp');
 
         $result = parent::fillFields($request, $model, $fields);
 

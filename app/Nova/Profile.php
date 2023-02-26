@@ -134,9 +134,9 @@ class Profile extends Resource
                     'company' => 'Организация',
                 ])->displayUsingLabels(),
 
-            // PhoneNumber::make(__('Номер телефона'), 'phone'),
+            Text::make(__('Номер телефона'), 'phone'),
 
-            // PhoneNumber::make(__('Whatsapp'), 'whatsapp'),
+            Text::make(__('Whatsapp'), 'whatsapp'),
 
         ];
     }

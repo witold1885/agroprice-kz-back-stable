@@ -66,7 +66,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function tools()
     {
-        return [];
+        return [
+            new \Sereny\NovaPermissions\NovaPermissions(),
+        ];
     }
 
     /**

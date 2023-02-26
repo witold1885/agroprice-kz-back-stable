@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\MorphToMany;
 
 class Admin extends Resource
 {
@@ -120,9 +121,9 @@ class Admin extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make(__('Роль'), function () {
+            /*Text::make(__('Роль'), function () {
                     return $this->getRoleName($this->role); 
-                })->onlyOnIndex(),
+                })->onlyOnIndex(),*/
 
             Select::make(__('Роль'), 'role')
                 ->options([
@@ -142,10 +143,13 @@ class Admin extends Resource
                 ->creationRules('required', Rules\Password::defaults())
                 ->updateRules('nullable', Rules\Password::defaults()),
 
+            MorphToMany::make(__('Роли'), 'roles', \Sereny\NovaPermissions\Nova\Role::class),
+            // MorphToMany::make(__('Права'), 'permissions', \Sereny\NovaPermissions\Nova\Permission::class),
+
         ];
     }
 
-    private function getRoleName($role)
+    /*private function getRoleName($role)
     {
         $roles = [
             'administrator' => 'Администратор',
@@ -153,7 +157,7 @@ class Admin extends Resource
             'manager' => 'Менеджер',
         ];
         return $roles[$role];
-    }
+    }*/
 
     /**
      * Get the cards available for the request.
