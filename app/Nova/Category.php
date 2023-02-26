@@ -192,18 +192,17 @@ class Category extends Resource
 
     private function getPath($id, $path = [])
     {
-        $category = \App\Models\Category::find($id);
-        // Log::info('Finding category ID' . $id);
-        // Log::info($category);
-        // Log::info('Current path:');
-        // Log::info($path);
-        // Log::info('---------');
-        // if ($category) {
-            $path[] = $category->name;
-            if ($category->parent_id) {
-                return $this->getPath($category->parent_id, $path);
-            }
-        // }
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+            $category = $categoriesArray[$id];
+        }
+        else {
+            $category = \App\Models\Category::find($id);
+        }
+        $path[] = $category->name;
+        if ($category->parent_id) {
+            return $this->getPath($category->parent_id, $path);
+        }
         return $path;
     }
 

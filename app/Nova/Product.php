@@ -15,6 +15,7 @@ use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Log;
+use Illuminate\Support\Facades\Cache;
 
 class Product extends Resource
 {
@@ -209,26 +210,46 @@ class Product extends Resource
 
     private function getUsers()
     {
-        $users = \App\Models\User::all();
-        foreach ($users as $user) {
-            $usersArray[$user->id] = $user->profile->fullname;
+        if (Cache::store('redis')->has('users')) {
+            $usersArray = Cache::store('redis')->get('users');
+        }
+        else {
+            $users = \App\Models\User::all();
+            foreach ($users as $user) {
+                $usersArray[$user->id] = $user->profile->fullname;
+            }
+            asort($usersArray);
+            Cache::store('redis')->put('users', $usersArray, 3600);
         }
         return $usersArray;
     }
 
     private function getCategories()
     {
-        $categories = \App\Models\Category::all();
-        $categoriesArray[0] = 'Нет';
-        foreach ($categories as $category) {
-            $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+        }
+        else {
+            $categories = \App\Models\Category::all();
+            foreach ($categories as $category) {
+                $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+            }
+            asort($categoriesArray);
+            $categoriesArray[0] = 'Нет';
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
         return $categoriesArray;
     }
 
     private function getPath($id, $path = [])
     {
-        $category = \App\Models\Category::find($id);
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+            $category = $categoriesArray[$id];
+        }
+        else {
+            $category = \App\Models\Category::find($id);
+        }
         $path[] = $category->name;
         if ($category->parent_id) {
             return $this->getPath($category->parent_id, $path);
