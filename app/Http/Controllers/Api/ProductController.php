@@ -13,6 +13,9 @@ use App\Models\ProductContact;
 use App\Models\Helper;
 use DB;
 use Log;
+use App\Models\Admin;
+use Laravel\Nova\Notifications\NovaNotification;
+use Laravel\Nova\URL;
 
 class ProductController extends Controller
 {
@@ -92,9 +95,26 @@ class ProductController extends Controller
                 $order++;
             }
 
+            if ($product->status == 'moderating') {
+                $this->notifyAdmins($product->id, 'Добавлено новое объявление "' . $product->name . '"');
+            }
+
             return response()->json(['success' => true]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage(), 'line' => $e->getLine()]);
+        }
+    }
+
+    public function notifyAdmins($product_id, $message)
+    {
+        foreach (Admin::all() as $admin) {
+            $admin->notify(
+                NovaNotification::make()
+                    ->message($message)
+                    ->action('Перейти', URL::remote(config('app.url') . '/nova/resources/products/' . $product_id))
+                    // ->icon('download')
+                    ->type('info')
+            );
         }
     }
 }
