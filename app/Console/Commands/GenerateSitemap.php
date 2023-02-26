@@ -46,7 +46,7 @@ class GenerateSitemap extends Command
     public function handle()
     {
         $this->addCategories();
-        $this->addProducts();
+        // $this->addProducts();
         file_put_contents(config('app.spa_dist') . 'sitemap.xml', $this->xml_data->asXML());
     }
 
@@ -54,7 +54,7 @@ class GenerateSitemap extends Command
     {
         foreach (Category::orderBy('parent_id', 'asc')->get() as $category) {
             $url = $this->xml_data->addChild('url');
-            $url->addChild('loc', 'https://agroprice.kz/' . $category->url);
+            $url->addChild('loc', 'https://agroprice.kz/catalog/' . $category->url);
             $url->addChild('changefreq', 'daily');
             $url->addChild('lastmod', date('Y-m-d') . 'T'. date('H:i:s') . '+00:00');
             $url->addChild('priority', '1.0');
