@@ -125,12 +125,12 @@ class Admin extends Resource
                     return $this->getRoleName($this->role); 
                 })->onlyOnIndex(),*/
 
-            Select::make(__('Роль'), 'role')
+            /*Select::make(__('Роль'), 'role')
                 ->options([
                     'administrator' => 'Администратор',
                     'moderator' => 'Модератор',
                     'manager' => 'Менеджер',
-                ])->displayUsingLabels(),
+                ])->displayUsingLabels(),*/
 
             Text::make(__('E-mail'), 'email')
                 ->sortable()
