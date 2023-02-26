@@ -175,6 +175,8 @@ class Category extends Resource
 
     private function getCategories()
     {
+            $categories = \App\Models\Category::get()->toArray();
+            Cache::store('redis')->put('categories', $categories, 3600);
         if (Cache::store('redis')->has('categories')) {
             $categories = Cache::store('redis')->get('categories');
         }
