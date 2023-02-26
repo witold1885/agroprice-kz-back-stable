@@ -15,17 +15,23 @@ class CatalogController extends Controller
                 return response()->json(['success' => false, 'error' => 'Category URL not specified']);
             }
 
-            $category = Category::where('url', $url)->with('children')->first();
+            $category = Category::where('url', $url)->first();
 
             if (!$category) {
                 return response()->json(['success' => false, 'error' => 'Category not found']);
             }
 
             $category->path = $this->getCategoryPath($category->id);
-            usort($category->children, function($a, $b) {
+
+            $children = Category::where('parent_id', $category->id)->get();
+
+            usort($children, function($a, $b) {
                 if ($a['order'] == $b['order']) return 0;
                 return $a['order'] < $b['order'] ? 1 : -1;
             });
+
+            $category->children = $children;
+
             return response()->json(['success' => true, 'category' => $category]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
