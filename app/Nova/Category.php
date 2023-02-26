@@ -175,10 +175,10 @@ class Category extends Resource
 
     private function getCategories()
     {
-        // if (Cache::store('redis')->has('categories')) {
-            // $categoriesArray = Cache::store('redis')->get('categories');
-        // }
-        // else {
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+        }
+        else {
             $categories = \App\Models\Category::all();
             foreach ($categories as $category) {
                 $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
@@ -186,7 +186,7 @@ class Category extends Resource
             asort($categoriesArray);
             $categoriesArray[0] = 'Нет';
             Cache::store('redis')->put('categories', $categoriesArray, 3600);
-        // }
+        }
         return $categoriesArray;
     }
 
