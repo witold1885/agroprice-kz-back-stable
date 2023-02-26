@@ -138,7 +138,7 @@ class AuthController extends Controller
 
         if (!$user->email_verified_at) {
             $user->update(['email_verified_at' => date('Y-m-d H:i:s')]);
-            return redirect()->intended(config('app.spa_url') . '/#/profile/complete-register');
+            return redirect()->intended(config('app.spa_url') . '/profile/complete-register');
         }
     }
 
@@ -209,7 +209,7 @@ class AuthController extends Controller
             return abort(404);               
         }
 
-        return redirect()->intended(config('app.spa_url') . '/#/reset-password/' . $token);
+        return redirect()->intended(config('app.spa_url') . '/reset-password/' . $token);
     }
 
     public function checkPasswordResetToken($token)
