@@ -23,7 +23,7 @@ class CatalogController extends Controller
 
             $category->path = $this->getCategoryPath($category->id);
 
-            $children = Category::where('parent_id', $category->id)->get();
+            $children = Category::where('parent_id', $category->id)->get()->toArray();
 
             usort($children, function($a, $b) {
                 if ($a['order'] == $b['order']) return 0;
