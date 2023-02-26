@@ -210,6 +210,7 @@ class Category extends Resource
         if (Cache::store('redis')->has('categories')) {
             $categoriesArray = Cache::store('redis')->get('categories');
             $categoriesArray[$modelObject->id] = implode(' > ', array_reverse($this->getPath($modelObject->id)));
+            asort($categoriesArray);
             Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
 
