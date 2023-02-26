@@ -141,9 +141,9 @@ class Category extends Resource
                 ->displayUsingLabels()
                 ->onlyOnForms(),
 
-            Text::make(__('Путь'), function () {
-                    return implode(' > ', array_reverse($this->getPath($this->id))); 
-                })->sortable()->onlyOnIndex(),
+            // Text::make(__('Путь'), function () {
+            //         return implode(' > ', array_reverse($this->getPath($this->id))); 
+            //     })->sortable()->onlyOnIndex(),
 
             Image::make('Изображение', 'image')
                 ->disk('public')
