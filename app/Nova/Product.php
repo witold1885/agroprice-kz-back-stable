@@ -226,35 +226,27 @@ class Product extends Resource
 
     private function getCategories()
     {
-        if (Cache::store('redis')->has('categories')) {
-            $categories = Cache::store('redis')->get('categories');
-        }
-        else {
-            $categories = \App\Models\Category::get()->toArray();
-            Cache::store('redis')->put('categories', $categories, 3600);
-        }
-        $categoriesArray = [];
-        foreach ($categories as $category) {
-            $categoriesArray[$category['id']] = implode(' > ', array_reverse($this->getPath($category['id'])));
-        }
-        asort($categoriesArray);
-        $categoriesArray[0] = 'Нет';
+        // if (Cache::store('redis')->has('categories')) {
+            // $categoriesArray = Cache::store('redis')->get('categories');
+        // }
+        // else {
+            $categories = \App\Models\Category::all();
+            foreach ($categories as $category) {
+                $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+            }
+            asort($categoriesArray);
+            $categoriesArray[0] = 'Нет';
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        // }
         return $categoriesArray;
     }
 
     private function getPath($id, $path = [])
     {
-        if (Cache::store('redis')->has('categories')) {
-            $categories = Cache::store('redis')->get('categories');
-            $category = $categories[$id];
-        }
-        else {
-            $category = \App\Models\Category::where('id', $id)->first()->toArray();
-        }
-        Log::info(Cache::store('redis')->get('categories'));
-        $path[] = $category['name'];
-        if ($category['parent_id']) {
-            return $this->getPath($category['parent_id'], $path);
+        $category = \App\Models\Category::find($id);
+        $path[] = $category->name;
+        if ($category->parent_id) {
+            return $this->getPath($category->parent_id, $path);
         }
         return $path;
     }
