@@ -182,7 +182,7 @@ class Category extends Resource
             $categories = \App\Models\Category::get()->toArray();
             Cache::store('redis')->put('categories', $categories, 3600);
         }
-        // Log::info(Cache::store('redis')->get('categories'));
+        Log::info(Cache::store('redis')->get('categories'));
         $categoriesArray = [];
         foreach ($categories as $category) {
             $categoriesArray[$category['id']] = implode(' > ', array_reverse($this->getPath($category['id'])));
@@ -201,7 +201,7 @@ class Category extends Resource
         else {
             $category = \App\Models\Category::where('id', $id)->first()->toArray();
         }
-        // Log::info(Cache::store('redis')->get('categories'));
+        Log::info(Cache::store('redis')->get('categories'));
         $path[] = $category['name'];
         if ($category['parent_id']) {
             return $this->getPath($category['parent_id'], $path);
