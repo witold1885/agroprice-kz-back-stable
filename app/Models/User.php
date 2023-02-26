@@ -71,6 +71,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->profile->type ?? null;
     }
 
+    public function getPhoneAttribute()
+    {
+        return $this->profile->phone ?? null;
+    }
+
+    public function getWhatsappAttribute()
+    {
+        return $this->profile->whatsapp ?? null;
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);

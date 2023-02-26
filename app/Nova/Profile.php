@@ -9,6 +9,8 @@ use Laravel\Nova\Fields\File;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
+// use Dniccum\PhoneNumber\PhoneNumber;
+// use Bissolli\NovaPhoneField\PhoneNumber;
 
 class Profile extends Resource
 {
@@ -130,7 +132,11 @@ class Profile extends Resource
                 ->options([
                     'private' => 'Частное лицо',
                     'company' => 'Организация',
-                ])->displayUsingLabels()
+                ])->displayUsingLabels(),
+
+            // PhoneNumber::make(__('Номер телефона'), 'phone'),
+
+            // PhoneNumber::make(__('Whatsapp'), 'whatsapp'),
 
         ];
     }

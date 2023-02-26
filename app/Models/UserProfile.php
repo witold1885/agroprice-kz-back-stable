@@ -14,6 +14,7 @@ class UserProfile extends Model
         'fullname',
         'type',
         'phone',
+        'whatsapp',
         'avatar',
     ];
 

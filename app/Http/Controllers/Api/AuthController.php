@@ -93,6 +93,7 @@ class AuthController extends Controller
             'fullname' => $request->profile['fullname'],
             'type' => $request->profile['type'],
             'phone' => $request->profile['phone'],
+            'whatsapp' => $request->profile['whatsapp'],
         ]);
 
         $user = User::where('id', $request->user_id)->first();

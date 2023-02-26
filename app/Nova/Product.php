@@ -152,17 +152,58 @@ class Product extends Resource
                 ->hideFromIndex(),
 
             Text::make(__('Контактное лицо'), 'person')
-                ->hideFromIndex(),
+                ->default(function ($request) {
+                    return $this->getUserData()['person'];
+                })
+                ->hideFromIndex()
+                ->rules('required'),
 
             Text::make(__('Email-адрес'), 'email')
+                ->default(function ($request) {
+                    return $this->getUserData()['email'];
+                })
                 ->hideFromIndex()
-                ->rules('email'),
+                ->rules('required', 'email'),
 
             Text::make(__('Номер телефона'), 'phone')
-                ->hideFromIndex(),
+                ->default(function ($request) {
+                    return $this->getUserData()['phone'];
+                })
+                ->hideFromIndex()
+                ->rules('required'),
+
+            Select::make(__('Статус'), 'status')
+                ->options([
+                    'draft' => 'Черновик',
+                    'published' => 'Опубликовано',
+                    'moderating' => 'На модерации',
+                    'accepted' => 'Одобрено',
+                    'declined' => 'Отклонено',
+                ])
+                ->default('accepted')
+                ->displayUsingLabels(),
 
             HasMany::make(__('Изображения'), 'productImages', ProductImage::class),
 
+        ];
+    }
+
+    private function getUserData()
+    {
+        if ($_GET['viaResource'] == 'users' && $_GET['viaResourceId']) {
+            $user = \App\Models\User::find($_GET['viaResourceId']);
+            if ($user) {
+                return [
+                    'person' => $user->profile->fullname,
+                    'email' => $user->email,
+                    'phone' => $user->profile->phone,
+                ];
+            }
+        }
+        return [
+            'person' => null,
+            'email' => null,
+            'phone' => null,
         ];
     }
 

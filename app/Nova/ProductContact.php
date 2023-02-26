@@ -121,7 +121,7 @@ class ProductContact extends Resource
 
             Text::make(__('E-mail'), 'email')
                 ->sortable()
-                ->rules('required', 'max:255'),
+                ->rules('required', 'email', 'max:255'),
 
             Text::make(__('Телефон'), 'phone')
                 ->sortable()

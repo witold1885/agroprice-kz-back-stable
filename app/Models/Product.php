@@ -42,17 +42,53 @@ class Product extends Model
 
     public function getPersonAttribute()
     {
-        return $this->contact->person ?? null;
+        if ($this->contact) {
+            if ($this->contact->person != '') {
+                return $this->contact->person;
+            }
+        }
+        elseif ($this->user) {
+            if ($this->user->profile->fullname != '') {
+                return $this->user->profile->fullname;
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     public function getEmailAttribute()
     {
-        return $this->contact->email ?? null;
+        if ($this->contact) {
+            if ($this->contact->email != '') {
+                return $this->contact->email;
+            }
+        }
+        elseif ($this->user) {
+            if ($this->user->email != '') {
+                return $this->user->email;
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     public function getPhoneAttribute()
     {
-        return $this->contact->phone ?? null;
+        if ($this->contact) {
+            if ($this->contact->phone != '') {
+                return $this->contact->phone;
+            }
+        }
+        elseif ($this->user) {
+            if ($this->user->profile->phone != '') {
+                return $this->user->profile->phone;
+            }
+        }
+        else {
+            return null;
+        }
     }
 
     public function location()

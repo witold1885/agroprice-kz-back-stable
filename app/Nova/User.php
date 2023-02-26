@@ -12,6 +12,9 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
+// use Dniccum\PhoneNumber\PhoneNumber;
+// use Bissolli\NovaPhoneField\PhoneNumber;
+// use Wemersonrv\InputMask\InputMask;
 
 class User extends Resource
 {
@@ -97,7 +100,7 @@ class User extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'profile.fullname';
 
     /**
      * The columns that should be searched.
@@ -105,12 +108,12 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'email',
+        'name', 'email', 'profile.fullname',
     ];
 
     public function title()
     {
-        return $this->profile->fullname;
+        return $this->profile->fullname . ' (ID ' . $this->name . ')';
     }
 
     /**
@@ -144,6 +147,13 @@ class User extends Resource
                     'private' => 'Частное лицо',
                     'company' => 'Организация',
                 ])->rules('required')->displayUsingLabels(),
+
+            Text::make(__('Номер телефона'), 'phone'),
+
+            Text::make(__('Whatsapp'), 'whatsapp'),
+            // InputMask::make(__('Номер телефона'), 'phone')
+            //     ->mask('###.###.###-##')  // 111.222.333.44
+            //     ->raw(),
 
             Text::make(__('E-mail'), 'email')
                 ->sortable()

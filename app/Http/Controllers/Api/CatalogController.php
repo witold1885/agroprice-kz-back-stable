@@ -22,6 +22,10 @@ class CatalogController extends Controller
             }
 
             $category->path = $this->getCategoryPath($category->id);
+            usort($category->children, function($a, $b) {
+                if ($a['order'] == $b['order']) return 0;
+                return $a['order'] < $b['order'] ; 1 ? -1;
+            });
             return response()->json(['success' => true, 'category' => $category]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);

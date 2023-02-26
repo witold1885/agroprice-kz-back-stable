@@ -12,7 +12,9 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
+        "bissolli/nova-phone-field": "^0.0.4",
         "coderello/laravel-nova-lang": "^2.0",
+        "dniccum/phone-number": "^1.0",
         "emilianotisato/nova-tinymce": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
