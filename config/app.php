@@ -58,6 +58,8 @@ return [
 
     'spa_url' => env('SPA_URL', 'http://localhost:8080'),
 
+    'spa_dist' => env('SPA_DIST', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
