@@ -24,6 +24,7 @@
         "laravel/tinker": "^2.5",
         "owenmelbz/nova-radio-field": "^1.0",
         "phpoffice/phpspreadsheet": "^1.27",
+        "predis/predis": "^2.1",
         "silvanite/novafieldcheckboxes": "^1.2",
         "tymon/jwt-auth": "^1.0"
     },

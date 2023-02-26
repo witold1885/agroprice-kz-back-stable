@@ -14,6 +14,7 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
 use Log;
+use Illuminate\Support\Facades\Cache;
 
 class Category extends Resource
 {
@@ -174,12 +175,18 @@ class Category extends Resource
 
     private function getCategories()
     {
-        $categories = \App\Models\Category::all();
-        foreach ($categories as $category) {
-            $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
         }
-        asort($categoriesArray);
-        $categoriesArray[0] = 'Нет';
+        else {
+            $categories = \App\Models\Category::all();
+            foreach ($categories as $category) {
+                $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+            }
+            asort($categoriesArray);
+            $categoriesArray[0] = 'Нет';
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        }
         return $categoriesArray;
     }
 
