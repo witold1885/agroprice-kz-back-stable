@@ -207,6 +207,12 @@ class Category extends Resource
         // first element should be model object
         $modelObject = $fillFields[0];
 
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+            $categoriesArray[$modelObject->id] = implode(' > ', array_reverse($this->getPath($modelObject->id)));
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        }
+
         // add extra attribute
         if (!$modelObject->url) {
             $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
