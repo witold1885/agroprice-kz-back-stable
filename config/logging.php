@@ -54,6 +54,14 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'db_queries' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/db_queries.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'permission' => 0777,
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
