@@ -1,0 +1,3 @@
+SHELL=/bin/bash
+MAILTO=root
+0 0 * * * cd /var/www/agroprice && /usr/bin/php artisan sitemap:generate
