@@ -13,6 +13,7 @@ use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
+use Log;
 
 class Category extends Resource
 {
@@ -185,12 +186,17 @@ class Category extends Resource
     private function getPath($id, $path = [])
     {
         $category = \App\Models\Category::find($id);
-        if ($category) {
+        Log::info('Finding category ID' . $id);
+        Log::info($category);
+        Log::info('Current path:');
+        Log::info($path);
+        Log::info('---------');
+        // if ($category) {
             $path[] = $category->name;
             if ($category->parent_id) {
                 return $this->getPath($category->parent_id, $path);
             }
-        }
+        // }
         return $path;
     }
 
