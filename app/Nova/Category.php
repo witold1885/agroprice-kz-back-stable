@@ -199,6 +199,7 @@ class Category extends Resource
         else {
             $category = \App\Models\Category::find($id);
         }
+        Log::info(Cache::store('redis')->get('categories'));
         $path[] = $category->name;
         if ($category->parent_id) {
             return $this->getPath($category->parent_id, $path);
