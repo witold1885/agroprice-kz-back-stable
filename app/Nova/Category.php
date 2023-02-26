@@ -185,9 +185,11 @@ class Category extends Resource
     private function getPath($id, $path = [])
     {
         $category = \App\Models\Category::find($id);
-        $path[] = $category->name;
-        if ($category->parent_id) {
-            return $this->getPath($category->parent_id, $path);
+        if ($category) {
+            $path[] = $category->name;
+            if ($category->parent_id) {
+                return $this->getPath($category->parent_id, $path);
+            }
         }
         return $path;
     }
