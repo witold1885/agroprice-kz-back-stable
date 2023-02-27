@@ -207,7 +207,7 @@ class Category extends Resource
         $category = \App\Models\Category::find($id);
         $path[] = $category->name;
         if ($category->parent_id) {
-            return self::getPath($category->parent_id, $path);
+            return self::getSelfPath($category->parent_id, $path);
         }
         return $path;
     }
