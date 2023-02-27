@@ -37,7 +37,7 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'error' => 'Пользователь не найден']);
         }
 
-        if (!$token = JWTAuth::attempt($validator->validated())) {
+        if (!$token = auth('web')->attempt($validator->validated())) {
             return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
         }
         return $this->createNewToken($token);
@@ -65,7 +65,7 @@ class AuthController extends Controller
 
         UserProfile::create(['user_id' => $user->id]);
 
-        if (!$token = JWTAuth::attempt($request->only('email','password'))) {
+        if (!$token = auth('web')->attempt($request->only('email','password'))) {
             return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
         }
 
@@ -125,7 +125,7 @@ class AuthController extends Controller
             'success' => true,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'user' => auth()->user()
+            'user' => auth('web')->user()
         ]);
     }
 
@@ -257,12 +257,12 @@ class AuthController extends Controller
     }
 
     public function refresh() {
-        return $this->createNewToken(auth()->refresh());
+        return $this->createNewToken(auth('web')->refresh());
     }
 
     public function logout()
     {
-        auth()->logout();
+        auth('web')->logout();
 
         return response()->json(['success' => true], 200);
     }
