@@ -15,9 +15,11 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
 use Log;
 use Illuminate\Support\Facades\Cache;
+use Ganyicz\NovaCallbacks\HasCallbacks;
 
 class Category extends Resource
 {
+    use HasCallbacks;
     /**
      * Get the displayable label of the resource.
      *
@@ -207,13 +209,6 @@ class Category extends Resource
         // first element should be model object
         $modelObject = $fillFields[0];
 
-        /*if (Cache::store('redis')->has('categories')) {
-            $categoriesArray = Cache::store('redis')->get('categories');
-            $categoriesArray[$modelObject->id] = implode(' > ', array_reverse(self::getPath($modelObject->id)));
-            asort($categoriesArray);
-            Cache::store('redis')->put('categories', $categoriesArray, 3600);
-        }*/
-
         // add extra attribute
         if (!$modelObject->url) {
             $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
@@ -228,6 +223,16 @@ class Category extends Resource
         }
 
         return $fillFields;
+    }
+
+    public static function afterCreate(Request $request, $model)
+    {
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+            $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getPath($model->id)));
+            asort($categoriesArray);
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        }
     }
 
     /**
