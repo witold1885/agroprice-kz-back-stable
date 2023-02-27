@@ -202,6 +202,16 @@ class Category extends Resource
         return $path;
     }
 
+    private function getSelfPath($id, $path = [])
+    {
+        $category = \App\Models\Category::find($id);
+        $path[] = $category->name;
+        if ($category->parent_id) {
+            return self::getPath($category->parent_id, $path);
+        }
+        return $path;
+    }
+
     protected static function fillFields(NovaRequest $request, $model, $fields)
     {
         $fillFields = parent::fillFields($request, $model, $fields);
@@ -229,7 +239,7 @@ class Category extends Resource
     {
         if (Cache::store('redis')->has('categories')) {
             $categoriesArray = Cache::store('redis')->get('categories');
-            $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getPath($model->id)));
+            $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
             asort($categoriesArray);
             Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
