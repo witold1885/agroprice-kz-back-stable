@@ -117,4 +117,40 @@ class ProductController extends Controller
             );
         }
     }
+
+    public function getProduct($url)
+    {
+        try {
+            if (!$url) {
+                return response()->json(['success' => false, 'error' => 'Product URL not specified']);
+            }
+
+            $product = Product::where('url', $url)->first();
+
+            if (!$product) {
+                return response()->json(['success' => false, 'error' => 'Product not found']);
+            }
+
+            $product_categories = ProductCategory::where('product_id', $product->id)->get();
+
+            $categories = [];
+            
+            foreach ($product_categories as $product_category) {
+                $category = Category::where('id', $product_category->category_id)->first();
+                $categories[] = $category;
+            }
+
+            /*usort($children, function($a, $b) {
+                if ($a['order'] == $b['order']) return 0;
+                return $a['order'] > $b['order'] ? 1 : -1;
+            });*/
+
+            $product->categories = $categories;
+
+            return response()->json(['success' => true, 'category' => $category]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }

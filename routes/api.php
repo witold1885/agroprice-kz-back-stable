@@ -56,4 +56,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::group(['prefix' => 'product'], function () {
         Route::post('save', [ProductController::class, 'saveProduct']);
+        Route::get('get/{url}', [ProductController::class, 'getProduct']);
     });
