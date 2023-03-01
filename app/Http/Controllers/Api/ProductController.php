@@ -148,7 +148,7 @@ class ProductController extends Controller
 
             $product->categories = $categories;
 
-            return response()->json(['success' => true, 'category' => $category]);
+            return response()->json(['success' => true, 'product' => $product]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
