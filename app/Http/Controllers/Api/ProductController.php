@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductContact;
+use App\Models\Category;
 use App\Models\Helper;
 use DB;
 use Log;
