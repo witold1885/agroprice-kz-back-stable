@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('menu-categories', [CatalogController::class, 'getMenuCategories']);
         Route::get('child-categories/{parent_id}', [CatalogController::class, 'getChildCategories']);
         Route::get('category-products/{category_id}', [CatalogController::class, 'getCategoryProducts']);
+        Route::get('random-products', [CatalogController::class, 'getRandomProducts']);
     });
 
     Route::group(['prefix' => 'locations'], function () {
