@@ -111,7 +111,7 @@ class CatalogController extends Controller
                 $products_ids[] = $category_product->product_id;
             }
 
-            $products = Product::whereIn('id', $products_ids)->get();
+            $products = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
             
             return response()->json(['success' => true, 'products' => $products]);
         } catch (\ErrorException $e) {
