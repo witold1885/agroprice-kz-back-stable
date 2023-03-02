@@ -151,7 +151,7 @@ class ProductController extends Controller
             $product->categories = $categories;
 
             if ($main_category_id) {
-                $category_products = ProductCategory::where('category_id', $category_id)->get();
+                $category_products = ProductCategory::where('category_id', $main_category_id)->get();
 
                 $products_ids = [];
                 foreach ($category_products as $category_product) {
