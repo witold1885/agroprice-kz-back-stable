@@ -148,6 +148,18 @@ class ProductController extends Controller
 
             $product->categories = $categories;
 
+            $category_products = ProductCategory::where('category_id', $category_id)->get();
+
+            $products_ids = [];
+            foreach ($category_products as $category_product) {
+                if ($category_product->product_id != $product->id) {
+                    $products_ids[] = $category_product->product_id;
+                }
+            }
+
+            $product->similar = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
+            
+
             return response()->json(['success' => true, 'product' => $product]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
