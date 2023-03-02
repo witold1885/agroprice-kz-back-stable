@@ -139,7 +139,10 @@ class ProductController extends Controller
             $main_category_id = 0;
             foreach ($product_categories as $product_category) {
                 $category = Category::where('id', $product_category->category_id)->first();
-                if ($category->parent_id == 0) $main_category_id = $category->id;
+                if ($category->parent_id == 0) {
+                    $product->category_name = $category->name;
+                    $main_category_id = $category->id;
+                }
                 $categories[] = $category;
             }
 
@@ -151,6 +154,12 @@ class ProductController extends Controller
             $product->categories = $categories;
 
             if ($main_category_id) {
+                foreach ($product_categories as $product_category) {
+                    $category = Category::where('id', $product_category->category_id)->first();
+                    if ($category->parent_id == $main_category_id) $product->category_name = $category->name;
+                    break;
+                }
+
                 $category_products = ProductCategory::where('category_id', $main_category_id)->get();
 
                 $products_ids = [];
