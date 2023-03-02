@@ -99,4 +99,22 @@ class CatalogController extends Controller
         }
     }
 
+    public function getCategoryProducts($category_id)
+    {
+        try {
+            $category_products = ProductCategory::where('category_id', $category_id)->get();
+
+            $products_ids = [];
+            foreach ($category_products as $category_product) {
+                $products_ids[] = $category_product->product_id;
+            }
+
+            $products = Product::whereIn('id', $products_ids)->get();
+            
+            return response()->json(['success' => true, 'products' => $products]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
