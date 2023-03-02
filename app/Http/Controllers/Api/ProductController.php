@@ -136,8 +136,10 @@ class ProductController extends Controller
 
             $categories = [];
             
+            $main_category_id = 0;
             foreach ($product_categories as $product_category) {
                 $category = Category::where('id', $product_category->category_id)->first();
+                if ($category->parent_id == 0) $main_category_id = $category->id;
                 $categories[] = $category;
             }
 
@@ -148,16 +150,21 @@ class ProductController extends Controller
 
             $product->categories = $categories;
 
-            $category_products = ProductCategory::where('category_id', $category_id)->get();
+            if ($main_category_id) {
+                $category_products = ProductCategory::where('category_id', $category_id)->get();
 
-            $products_ids = [];
-            foreach ($category_products as $category_product) {
-                if ($category_product->product_id != $product->id) {
-                    $products_ids[] = $category_product->product_id;
+                $products_ids = [];
+                foreach ($category_products as $category_product) {
+                    if ($category_product->product_id != $product->id) {
+                        $products_ids[] = $category_product->product_id;
+                    }
                 }
-            }
 
-            $product->similar = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
+                $product->similar = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
+            }
+            else {
+                $product->similar = [];
+            }
             
 
             return response()->json(['success' => true, 'product' => $product]);
