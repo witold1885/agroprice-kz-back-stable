@@ -135,6 +135,8 @@ class ProductController extends Controller
             $product_categories = ProductCategory::where('product_id', $product->id)->get();
 
             $categories = [];
+
+            $product->category_name = '';
             
             $main_category_id = 0;
             foreach ($product_categories as $product_category) {
