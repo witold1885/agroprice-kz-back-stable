@@ -210,8 +210,8 @@ class Product extends Resource
 
     private function getUsers()
     {
-        if (Cache::store('file')->has('users')) {
-            $usersArray = Cache::store('file')->get('users');
+        if (Cache::store('redis')->has('users')) {
+            $usersArray = Cache::store('redis')->get('users');
         }
         else {
             $users = \App\Models\User::all();
@@ -219,15 +219,15 @@ class Product extends Resource
                 $usersArray[$user->id] = $user->profile->fullname;
             }
             asort($usersArray);
-            Cache::store('file')->put('users', $usersArray, 3600);
+            Cache::store('redis')->put('users', $usersArray, 3600);
         }
         return $usersArray;
     }
 
     private function getCategories()
     {
-        if (Cache::store('file')->has('categories')) {
-            $categoriesArray = Cache::store('file')->get('categories');
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
         }
         else {
             $categories = \App\Models\Category::all();
@@ -236,7 +236,7 @@ class Product extends Resource
             }
             asort($categoriesArray);
             $categoriesArray[0] = 'Нет';
-            Cache::store('file')->put('categories', $categoriesArray, 3600);
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
         return $categoriesArray;
     }

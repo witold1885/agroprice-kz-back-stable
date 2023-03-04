@@ -177,18 +177,18 @@ class Category extends Resource
 
     private function getCategories()
     {
-        // if (Cache::store('file')->has('categories')) {
-        //     $categoriesArray = Cache::store('file')->get('categories');
-        // }
-        // else {
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+        }
+        else {
             $categories = \App\Models\Category::all();
             foreach ($categories as $category) {
                 $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
             }
             asort($categoriesArray);
             $categoriesArray[0] = 'Нет';
-            // Cache::store('file')->put('categories', $categoriesArray, 3600);
-        // }
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        }
         return $categoriesArray;
     }
 
@@ -237,11 +237,11 @@ class Category extends Resource
 
     public static function afterCreate(Request $request, $model)
     {
-        if (Cache::store('file')->has('categories')) {
-            $categoriesArray = Cache::store('file')->get('categories');
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
             $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
             asort($categoriesArray);
-            Cache::store('file')->put('categories', $categoriesArray, 3600);
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
     }
 
