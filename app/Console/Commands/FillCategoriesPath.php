@@ -41,10 +41,11 @@ class FillCategoriesPath extends Command
         $categories = Category::all();
         echo count($categories) . PHP_EOL;
         foreach ($categories as $category) {
-            echo $category->id . ' - ' . $category->name . PHP_EOL;
             if (!$category->path) {
+                echo $category->id . ' - ' . $category->name . PHP_EOL;
                 $category->update(['path' => implode(' > ', array_reverse($this->getPath($category->id)))]);
             }
+
         }
     }
 
