@@ -232,7 +232,8 @@ class Product extends Resource
         else {
             $categories = \App\Models\Category::all();
             foreach ($categories as $category) {
-                $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+                // $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+                $categoriesArray[$category->id] = $category->path;
             }
             asort($categoriesArray);
             $categoriesArray[0] = 'Нет';

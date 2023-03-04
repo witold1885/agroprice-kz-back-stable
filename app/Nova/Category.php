@@ -144,9 +144,13 @@ class Category extends Resource
                 ->displayUsingLabels()
                 ->onlyOnForms(),
 
-            Text::make(__('Путь'), function () {
+            /*Text::make(__('Путь'), function () {
                     return implode(' > ', array_reverse($this->getPath($this->id))); 
-                })->sortable()->onlyOnIndex(),
+                })->sortable()->onlyOnIndex(),*/
+
+            Text::make(__('Путь'), 'path')
+                ->sortable()
+                ->onlyOnIndex(),
 
             Image::make('Изображение', 'image')
                 ->disk('public')
@@ -183,7 +187,8 @@ class Category extends Resource
         else {
             $categories = \App\Models\Category::all();
             foreach ($categories as $category) {
-                $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+                // $categoriesArray[$category->id] = implode(' > ', array_reverse($this->getPath($category->id)));
+                $categoriesArray[$category->id] = $category->path;
             }
             asort($categoriesArray);
             $categoriesArray[0] = 'Нет';
@@ -239,7 +244,8 @@ class Category extends Resource
     {
         if (Cache::store('redis')->has('categories')) {
             $categoriesArray = Cache::store('redis')->get('categories');
-            $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
+            // $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
+            $categoriesArray[$model->id] = $model->path;
             asort($categoriesArray);
             Cache::store('redis')->put('categories', $categoriesArray, 3600);
         }
