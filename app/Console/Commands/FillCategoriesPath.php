@@ -38,8 +38,13 @@ class FillCategoriesPath extends Command
      */
     public function handle()
     {
-        foreach (Category::all() as $category) {
-            $category->update(['path' => implode(' > ', array_reverse($this->getPath($category->id)))]);
+        $categories = Category::all();
+        echo count($categories) . PHP_EOL;
+        foreach ($categories as $category) {
+            echo $category->id . ' - ' . $category->name . PHP_EOL;
+            if (!$category->path) {
+                $category->update(['path' => implode(' > ', array_reverse($this->getPath($category->id)))]);
+            }
         }
     }
 
