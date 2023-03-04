@@ -20,6 +20,7 @@ class Category extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'path'
     ];
 
     public function children() {
