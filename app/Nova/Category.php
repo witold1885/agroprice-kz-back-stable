@@ -237,6 +237,8 @@ class Category extends Resource
             $modelObject->meta_title = $modelObject->name;
         }
 
+        $modelObject->path = implode(' > ', array_reverse(self::getSelfPath($modelObject->id)));
+
         return $fillFields;
     }
 
