@@ -102,7 +102,7 @@ class Category extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'path';
 
     /**
      * The columns that should be searched.
@@ -113,10 +113,10 @@ class Category extends Resource
         'id', 'name'
     ];
 
-    public function title()
+    /*public function title()
     {
         return implode(' > ', array_reverse($this->getPath($this->id)));
-    }
+    }*/
 
     /**
      * Get the fields displayed by the resource.
