@@ -254,10 +254,17 @@ class Product extends Resource
 
     private function getLocations()
     {
-        $locations = \App\Models\Location::orderBy('city', 'asc')->get();
-        $locationsArray[0] = 'Нет';
-        foreach ($locations as $location) {
-            $locationsArray[$location->id] = $location->city;
+        if (Cache::store('redis')->has('locations')) {
+            $locationsArray = Cache::store('redis')->get('locations');
+        }
+        else {
+            $locations = \App\Models\Location::orderBy('city', 'asc')->get();
+            foreach ($locations as $location) {
+                $locationsArray[$location->id] = $location->city;
+            }
+            asort($locationsArray);
+            $locationsArray[0] = 'Нет';
+            Cache::store('redis')->put('locations', $locationsArray, 3600);
         }
         return $locationsArray;
     }
