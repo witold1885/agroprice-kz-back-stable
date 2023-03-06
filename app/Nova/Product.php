@@ -164,13 +164,21 @@ class Product extends Resource
                     return $this->getUserData()['email'];
                 })
                 ->hideFromIndex()
-                ->rules('required', 'email'),
+                ->rules('email'),
 
             Text::make(__('Номер телефона'), 'phone')
                 ->default(function ($request) {
                     return $this->getUserData()['phone'];
                 })
                 ->hideFromIndex()
+                ->hideWhenCreating()
+                ->rules('required'),
+
+            Text::make(__('Номер телефона'), 'phone')
+                ->default('+77')
+                ->hideFromIndex()
+                ->hideFromDetail()
+                ->hideWhenUpdating()
                 ->rules('required'),
 
             Select::make(__('Статус'), 'status')
