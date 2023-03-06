@@ -80,20 +80,22 @@ class ProductController extends Controller
                 'phone' => $contact['phone'],
             ]);
             // Log::info($request->images);
-            $order = 1;
-            foreach ($request->images as $image) {
-                $extension = $image->getClientOriginalExtension();                
-                $filename = date('y') . '-' . date('m') . '-' . date('d') . '-' . $productUrl . '-' . $order . '.' . $extension;
-                $path = $image->move(storage_path('app/public/products'), $filename);
-                ProductImage::updateOrCreate([
-                    'product_id' => $product->id,
-                    'path' => 'products/' . $filename,
-                ], [
-                    'product_id' => $product->id,
-                    'path' => 'products/' . $filename,
-                    'order' => $order,
-                ]);
-                $order++;
+            if ($request->images) {
+                $order = 1;
+                foreach ($request->images as $image) {
+                    $extension = $image->getClientOriginalExtension();                
+                    $filename = date('y') . '-' . date('m') . '-' . date('d') . '-' . $productUrl . '-' . $order . '.' . $extension;
+                    $path = $image->move(storage_path('app/public/products'), $filename);
+                    ProductImage::updateOrCreate([
+                        'product_id' => $product->id,
+                        'path' => 'products/' . $filename,
+                    ], [
+                        'product_id' => $product->id,
+                        'path' => 'products/' . $filename,
+                        'order' => $order,
+                    ]);
+                    $order++;
+                }
             }
 
             if ($product->status == 'moderating') {
