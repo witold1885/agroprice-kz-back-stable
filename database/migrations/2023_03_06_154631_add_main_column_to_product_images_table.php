@@ -14,7 +14,7 @@ class AddMainColumnToProductImagesTable extends Migration
     public function up()
     {
         Schema::table('product_images', function (Blueprint $table) {
-            //
+            $table->boolean('main')->default(false);
         });
     }
 
@@ -26,7 +26,7 @@ class AddMainColumnToProductImagesTable extends Migration
     public function down()
     {
         Schema::table('product_images', function (Blueprint $table) {
-            $table->boolean('main')->default(false);
+            //
         });
     }
 }
