@@ -16,9 +16,12 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Log;
 use Illuminate\Support\Facades\Cache;
+use Ganyicz\NovaCallbacks\HasCallbacks;
+use App\Models\Helper;
 
 class Product extends Resource
 {
+    use HasCallbacks;
     /**
      * Get the displayable label of the resource.
      *
@@ -163,8 +166,7 @@ class Product extends Resource
                 ->default(function ($request) {
                     return $this->getUserData()['email'];
                 })
-                ->hideFromIndex()
-                ->rules('email'),
+                ->hideFromIndex(),
 
             Text::make(__('Номер телефона'), 'phone')
                 ->default(function ($request) {
@@ -300,6 +302,18 @@ class Product extends Resource
         }
 
         return $result;
+    }
+
+    public static function afterCreate(Request $request, $model)
+    {
+        $productUrl = Helper::transliterate($model->name, 'ru') . '-' . $model->id;
+        $model->update(['url' => $productUrl]);
+    }
+
+    public static function afterUpdate(Request $request, $model)
+    {
+        Log::info('Product updated:');
+        Log::info($request);
     }
 
     /**
