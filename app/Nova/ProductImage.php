@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ProductImage extends Resource
@@ -119,6 +120,8 @@ class ProductImage extends Resource
             Image::make(__('Файл'), 'path')
                 ->disk('public')
                 ->path('products'),
+
+            Boolean::make(__('Главное изображение'), 'main')->default(false),
 
             Number::make(__('Порядок отображения'), 'order')
                 ->default(0)
