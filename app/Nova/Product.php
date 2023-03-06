@@ -157,22 +157,22 @@ class Product extends Resource
                 ->hideFromIndex(),
 
             Text::make(__('Контактное лицо'), 'person')
-                ->default(function ($request) {
+                /*->default(function ($request) {
                     return $this->getUserData()['person'];
-                })
+                })*/
                 ->hideFromIndex()
                 ->rules('required'),
 
             Text::make(__('Email-адрес'), 'email')
-                ->default(function ($request) {
+                /*->default(function ($request) {
                     return $this->getUserData()['email'];
-                })
+                })*/
                 ->hideFromIndex(),
 
             Text::make(__('Номер телефона'), 'phone')
-                ->default(function ($request) {
+                /*->default(function ($request) {
                     return $this->getUserData()['phone'];
-                })
+                })*/
                 ->hideFromIndex()
                 ->hideWhenCreating()
                 ->rules('required'),
