@@ -13,6 +13,7 @@ class ProductImage extends Model
         'product_id',
         'path',
         'order',
+        'main',
     ];
 
     public function product()
