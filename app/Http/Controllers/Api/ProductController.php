@@ -128,7 +128,12 @@ class ProductController extends Controller
                 return response()->json(['success' => false, 'error' => 'Product URL not specified']);
             }
 
-            $product = Product::where('url', $url)->with('user')->with('location')->with('productImages')->first();
+            $product = Product::where('url', $url)
+                ->with('user')
+                ->with('location')
+                ->with('productImages')
+                ->with('contact')
+                ->first();
 
             if (!$product) {
                 return response()->json(['success' => false, 'error' => 'Product not found']);
