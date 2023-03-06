@@ -182,7 +182,7 @@ class Product extends Resource
                 ->hideFromIndex()
                 ->hideFromDetail()
                 ->hideWhenUpdating()
-                ->rules('required', 'max:12'),
+                ->rules('required', 'min:12', 'max:12'),
 
             Select::make(__('Статус'), 'status')
                 ->options([
