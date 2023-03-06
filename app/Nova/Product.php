@@ -15,6 +15,7 @@ use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Log;
+use DB;
 use Illuminate\Support\Facades\Cache;
 use Ganyicz\NovaCallbacks\HasCallbacks;
 use App\Models\Helper;
@@ -279,6 +280,22 @@ class Product extends Resource
         return $locationsArray;
     }
 
+    private static function updateProductCategories($product_id, $id)
+    {
+        $category = \App\Models\Category::find($id);
+        DB::table('product_categories')->updateOrInsert([
+            'category_id' => $id,
+            'product_id' => $product_id, 
+        ], [
+            'category_id' => $id,
+            'product_id' => $product_id, 
+        ], ['timestamps' => false]);
+        if ($category->parent_id) {
+            return self::updateProductCategories($product_id, $category->parent_id);
+        }
+        return true;
+    }
+
     protected static function fillFields(NovaRequest $request, $model, $fields)
     {
         if (isset($request['person']) || isset($request['email']) || isset($request['phone'])) {
@@ -297,6 +314,13 @@ class Product extends Resource
                 );
             };
         }
+        elseif ($request['viaRelationship'] == 'categories' && $request['editMode'] == 'attach') {
+            $category = \App\Models\Category::find($model->category_id);
+            if ($category->parent_id) {
+                self::updateProductCategories($model->product_id, $category->parent_id);
+            }
+            $result = parent::fillFields($request, $model, $fields);
+        }
         else {
             $result = parent::fillFields($request, $model, $fields);
         }
@@ -312,8 +336,8 @@ class Product extends Resource
 
     public static function afterUpdate(Request $request, $model)
     {
-        Log::info('Product updated:');
-        Log::info($request);
+        // Log::info('Product updated:');
+        // Log::info($request);
     }
 
     /**
