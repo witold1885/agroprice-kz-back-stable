@@ -143,7 +143,8 @@ class ProductAttribute extends Resource
                             $field->options([])->hide();
                         }
                     }
-                ),
+                )
+                ->displayUsingLabels(),
         ];
     }
 
