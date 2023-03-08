@@ -144,7 +144,11 @@ class ProductAttribute extends Resource
                         }
                     }
                 )
-                ->displayUsingLabels(),
+                ->displayUsingLabels()
+                ->onlyOnForms(),
+
+            BelongsTo::make(__('Значение фильтра'), 'filter', Filter::class)->exceptOnForms(),
+
         ];
     }
 
