@@ -41,7 +41,7 @@ class ParseFilters extends Command
      */
     public function handle()
     {
-        $inputFileName = '/home/w/Завантаження/Фильтры.xlsx';
+        $inputFileName = storage_path('app/public/Фильтры.xlsx');
         $reader = IOFactory::createReader('Xlsx');
         $reader->setLoadAllSheets();
         $spreadsheet = $reader->load($inputFileName);
