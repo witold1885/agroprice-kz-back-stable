@@ -131,11 +131,14 @@ class ProductAttribute extends Resource
                         if ($formData->filterGroup) {
                             $filters = \App\Models\Filter::where('filter_group_id', $formData->filterGroup)
                                 ->get()
-                                ->mapWithKeys(fn ($filter) => [
+                                /*->mapWithKeys(fn ($filter) => [
                                     $filter->id => \App\Models\Filter::make($filter)->value()
-                                ]);
-
-                            $field->options($filters)->show();
+                                ])*/;
+                            $filtersArray = [];
+                            foreach ($filters as $filter) {
+                                $filtersArray[$filter->id] = $filter->value;
+                            }
+                            $field->options($filtersArray)->show();
                         } else {
                             $field->options([])->hide();
                         }
