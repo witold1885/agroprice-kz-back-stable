@@ -197,6 +197,8 @@ class Product extends Resource
 
             HasMany::make(__('Изображения'), 'productImages', ProductImage::class),
 
+            HasMany::make(__('Фильтры'), 'productAttributes', ProductAttribute::class),
+
         ];
     }
 

@@ -8,4 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class ProductAttribute extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'product_id',
+        'filter_group_id',
+        'filter_id',
+    ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function filterGroup()
+    {
+        return $this->belongsTo(FilterGroup::class);
+    }
+
 }
