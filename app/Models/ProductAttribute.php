@@ -25,4 +25,9 @@ class ProductAttribute extends Model
         return $this->belongsTo(FilterGroup::class);
     }
 
+    public function filter()
+    {
+        return $this->belongsTo(Filter::class);
+    }
+
 }
