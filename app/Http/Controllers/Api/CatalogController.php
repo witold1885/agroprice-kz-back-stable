@@ -101,7 +101,7 @@ class CatalogController extends Controller
         }
     }
 
-    public function getCategoryProducts($category_id, $limit, $page)
+    public function getCategoryProducts($category_id)
     {
         try {
             $category_products = ProductCategory::where('category_id', $category_id)->get();
@@ -111,7 +111,7 @@ class CatalogController extends Controller
                 $products_ids[] = $category_product->product_id;
             }
 
-            $products = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->skip(($page - 1) * $limit)->take($limit)->get();
+            $products = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
 
             foreach ($products as $product) {
                 $product->category_name = '';
