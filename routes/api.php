@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('main-categories', [CatalogController::class, 'getMainCategories']);
         Route::get('menu-categories', [CatalogController::class, 'getMenuCategories']);
         Route::get('child-categories/{parent_id}', [CatalogController::class, 'getChildCategories']);
-        Route::get('category-products/{category_id}', [CatalogController::class, 'getCategoryProducts']);
+        Route::get('category-products/{category_id}/{limit}/{page}', [CatalogController::class, 'getCategoryProducts']);
         Route::get('random-products', [CatalogController::class, 'getRandomProducts']);
     });
 
