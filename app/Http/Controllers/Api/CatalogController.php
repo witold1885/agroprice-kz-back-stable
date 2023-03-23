@@ -136,7 +136,7 @@ class CatalogController extends Controller
                 }
             }
 
-            return response()->json(['success' => true, 'products' => $products]);
+            return response()->json(['success' => true, 'products' => $products, 'total' => count($products_ids)]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
