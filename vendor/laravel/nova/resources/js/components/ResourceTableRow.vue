@@ -37,7 +37,7 @@
         'px-2': index != 0 || shouldShowCheckboxes,
         'py-2': !shouldShowTight,
         'whitespace-nowrap': !field.wrapping,
-        'cursor-pointer': resource.authorizedToView && clickAction !== 'ignore',
+        'cursor-pointer': clickableRow,
       }"
       class="dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900"
     >
@@ -294,6 +294,9 @@ export default {
     },
 
     navigateToPreviewView(e) {
+      if (!this.resource.authorizedToView) {
+        return
+      }
       this.openPreviewModal()
     },
 
@@ -366,6 +369,22 @@ export default {
 
     shouldShowTight() {
       return this.tableStyle === 'tight'
+    },
+
+    clickableRow() {
+      if (this.clickAction === 'edit') {
+        return this.resource.authorizedToUpdate
+      } else if (this.clickAction === 'select') {
+        return this.shouldShowCheckboxes
+      } else if (this.clickAction === 'ignore') {
+        return false
+      } else if (this.clickAction === 'detail') {
+        return this.resource.authorizedToView
+      } else if (this.clickAction === 'preview') {
+        return this.resource.authorizedToView
+      } else {
+        return this.resource.authorizedToView
+      }
     },
   },
 }

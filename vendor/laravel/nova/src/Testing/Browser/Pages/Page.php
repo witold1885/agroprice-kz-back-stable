@@ -27,17 +27,6 @@ class Page extends Dusk
     }
 
     /**
-     * Dismiss toasted messages.
-     *
-     * @param  \Laravel\Dusk\Browser  $browser
-     * @return void
-     */
-    public function dismissToasted(Browser $browser)
-    {
-        $browser->script('Nova.$toasted.clear()');
-    }
-
-    /**
      * Get the URL for the page.
      *
      * @return string

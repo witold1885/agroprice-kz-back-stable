@@ -13,7 +13,6 @@
         <IndexEmptyDialog
           :create-button-label="createButtonLabel"
           :singular-name="singularName"
-          :genitive-plural-name="genitivePluralName"
           :resource-name="field.resourceName"
           :via-resource="resourceName"
           :via-resource-id="viaResourceId"
@@ -57,10 +56,6 @@ export default {
 
     singularName() {
       return this.field.singularLabel
-    },
-
-    genitivePluralName() {
-      return this.field.genitivePluralLabel
     },
 
     viaResourceId() {

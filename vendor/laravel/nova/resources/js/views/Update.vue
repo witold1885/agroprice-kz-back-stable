@@ -250,6 +250,8 @@ export default {
             if (id != this.resourceId) {
               Nova.visit(`/resources/${this.resourceName}/${id}/edit`)
             } else {
+              window.scrollTo(0, 0)
+
               // Reset the form by refetching the fields
               this.getFields()
 

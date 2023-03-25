@@ -31,7 +31,7 @@
           type="button"
         >
           <span class="hidden md:inline-block">
-            {{ __('Create :resource', { resource: field.accusativeLabel }) }}
+            {{ __('Create :resource', { resource: field.singularLabel }) }}
           </span>
           <span class="inline-block md:hidden">
             {{ __('Create') }}

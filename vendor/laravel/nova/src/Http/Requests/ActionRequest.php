@@ -131,10 +131,13 @@ class ActionRequest extends NovaRequest
     {
         return tap($this->newQueryWithoutScopes(), function ($query) {
             $resource = $this->resource();
+            $query->with($resource::$with);
 
-            $resource::indexQuery(
-                $this, $query->with($resource::$with)
-            );
+            if (! $this->allResourcesSelected() && $this->selectedResourceIds()->count() === 1) {
+                $resource::detailQuery($this, $query);
+            } else {
+                $resource::indexQuery($this, $query);
+            }
         });
     }
 
@@ -160,9 +163,11 @@ class ActionRequest extends NovaRequest
      */
     protected function mapChunk($chunk)
     {
-        return ActionModelCollection::make($this->isPivotAction()
+        return ActionModelCollection::make(
+            $this->isPivotAction()
                     ? $chunk->map->pivot
-                    : $chunk);
+                    : $chunk
+        );
     }
 
     /**

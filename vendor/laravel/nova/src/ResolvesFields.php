@@ -73,6 +73,7 @@ trait ResolvesFields
 
         return $this->buildAvailableFields($request, ['fieldsForIndex', 'fieldsForDetail'])
                     ->when($request->viaManyToMany(), $this->fieldResolverCallback($request))
+                    ->flattenStackedFields()
                     ->withoutResourceTools()
                     ->withoutListableFields()
                     ->filter
@@ -117,13 +118,14 @@ trait ResolvesFields
         // using `showWhenPeeking` inside the resource's `fields`, `fieldsForIndex`, and `fieldsForDetail` methods.
         if (method_exists($this, 'fieldsForPeeking')) {
             return FieldCollection::make(array_values($this->filter($this->fieldsForPeeking($request))));
-        } else {
-            return $this->buildAvailableFields($request, ['fieldsForIndex', 'fieldsForDetail'])
-                    ->when($request->viaManyToMany(), $this->fieldResolverCallback($request))
-                    ->withoutResourceTools()
-                    ->withoutListableFields()
-                    ->filterForPeeking($request);
         }
+
+        return $this->buildAvailableFields($request, ['fieldsForIndex', 'fieldsForDetail'])
+                ->when($request->viaManyToMany(), $this->fieldResolverCallback($request))
+                ->flattenStackedFields()
+                ->withoutResourceTools()
+                ->withoutListableFields()
+                ->filterForPeeking($request);
     }
 
     /**
@@ -170,6 +172,7 @@ trait ResolvesFields
             })
             ->whereInstanceOf(Deletable::class)
             ->unique(function ($field) {
+                /** @var \Laravel\Nova\Fields\Field&\Laravel\Nova\Contracts\Deletable $field */
                 return $field->attribute;
             })
             ->authorized($request)
@@ -188,6 +191,7 @@ trait ResolvesFields
             ->when($request->viaManyToMany(), $this->fieldResolverCallback($request))
             ->whereInstanceOf(Downloadable::class)
             ->unique(function ($field) {
+                /** @var \Laravel\Nova\Fields\Field&\Laravel\Nova\Contracts\Downloadable $field */
                 return $field->attribute;
             })
             ->authorized($request)
@@ -212,6 +216,7 @@ trait ResolvesFields
 
                 return call_user_func($this->relatedFieldResolverCallback($request), $fields);
             })
+            ->flattenStackedFields()
             ->withOnlyFilterableFields()
             ->unique(function ($field) {
                 return $field->attribute;

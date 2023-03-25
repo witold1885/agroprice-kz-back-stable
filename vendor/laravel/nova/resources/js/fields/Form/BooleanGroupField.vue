@@ -15,7 +15,7 @@
           @input="toggle($event, option)"
           :disabled="currentlyIsReadonly"
         >
-          {{ option.label }}
+          <span>{{ option.label }}</span>
         </CheckboxWithLabel>
       </div>
     </template>

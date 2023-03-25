@@ -1232,13 +1232,11 @@ class Nova
     public static function resourceInformation(Request $request)
     {
         return static::resourceCollection()->map(function ($resource) use ($request) {
+            /** @var class-string<\Laravel\Nova\Resource> $resource */
             return array_merge([
                 'uriKey' => $resource::uriKey(),
                 'label' => $resource::label(),
                 'singularLabel' => $resource::singularLabel(),
-                'genitiveLabel' => $resource::genitiveLabel(),
-                'accusativeLabel' => $resource::accusativeLabel(),
-                'genitivePluralLabel' => $resource::genitivePluralLabel(),
                 'createButtonLabel' => $resource::createButtonLabel(),
                 'updateButtonLabel' => $resource::updateButtonLabel(),
                 'authorizedToCreate' => $resource::authorizedToCreate($request),

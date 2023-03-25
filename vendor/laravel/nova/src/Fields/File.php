@@ -182,7 +182,7 @@ class File extends Field implements StorableContract, DeletableContract, Downloa
      */
     public function getStorageDisk()
     {
-        return $this->disk ?: config('nova.storage_disk', 'public');
+        return $this->disk ?: $this->getDefaultStorageDisk();
     }
 
     /**

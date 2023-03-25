@@ -48,7 +48,7 @@ import { useDragAndDrop } from '@/composables/useDragAndDrop'
 
 const { __ } = useLocalization()
 
-const emit = defineEmits(['change', 'fileRemoved'])
+const emit = defineEmits(['fileChanged', 'fileRemoved'])
 
 const { startedDrag, handleOnDragEnter, handleOnDragLeave, handleOnDrop } =
   useDragAndDrop(emit)

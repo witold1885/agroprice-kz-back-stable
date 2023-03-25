@@ -2,8 +2,10 @@
 
 namespace Laravel\Nova;
 
+use Illuminate\Http\Resources\ConditionallyLoadsAttributes;
 use Illuminate\Http\Resources\MergeValue;
 use Illuminate\Http\Resources\MissingValue;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use JsonSerializable;
 use Laravel\Nova\Contracts\RelatableField;
@@ -12,11 +14,15 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\HasHelpText;
 
 /**
+ * @phpstan-type TFields \Laravel\Nova\Fields\Field|\Laravel\Nova\ResourceToolElement|\Illuminate\Http\Resources\MergeValue|\Illuminate\Http\Resources\MissingValue
+ * @phpstan-type TPanelFields array<int, TFields>|iterable<int, TFields>
+ *
  * @method static static make(string $name, \Closure|array|iterable $fields = [])
  */
 #[\AllowDynamicProperties]
 class Panel extends MergeValue implements JsonSerializable
 {
+    use ConditionallyLoadsAttributes;
     use Macroable;
     use Metable;
     use Makeable;
@@ -33,7 +39,7 @@ class Panel extends MergeValue implements JsonSerializable
     /**
      * The panel fields.
      *
-     * @var array
+     * @var array<int, \Laravel\Nova\Fields\Field>
      */
     public $data;
 
@@ -69,7 +75,7 @@ class Panel extends MergeValue implements JsonSerializable
      * Create a new panel instance.
      *
      * @param  string  $name
-     * @param  (\Closure():(array|iterable))|array|iterable  $fields
+     * @param  (\Closure():(TPanelFields))|TPanelFields  $fields
      * @return void
      */
     public function __construct($name, $fields = [])
@@ -105,15 +111,19 @@ class Panel extends MergeValue implements JsonSerializable
     /**
      * Prepare the given fields.
      *
-     * @param  (\Closure():(array|iterable))|array|iterable  $fields
-     * @return array
+     * @param  (\Closure():(TPanelFields))|TPanelFields  $fields
+     * @return array<int, \Laravel\Nova\Fields\Field>
      */
     protected function prepareFields($fields)
     {
-        return collect(is_callable($fields) ? $fields() : $fields)
+        $fields = is_callable($fields) ? $fields() : $fields;
+
+        return collect($this->filter($fields instanceof Collection ? $fields->all() : $fields))
             ->reject(function ($field) {
                 return $field instanceof MissingValue;
-            })->each(function ($field) {
+            })
+            ->values()
+            ->each(function ($field) {
                 $field->assignedPanel = $this;
                 $field->panel = $this->name;
             })->all();
@@ -128,7 +138,7 @@ class Panel extends MergeValue implements JsonSerializable
     public static function defaultNameForDetail(Resource $resource)
     {
         return __(':resource Details: :title', [
-            'resource' => $resource->genitiveLabel(),
+            'resource' => $resource->singularLabel(),
             'title' => (string) $resource->title(),
         ]);
     }
@@ -142,7 +152,7 @@ class Panel extends MergeValue implements JsonSerializable
     public static function defaultNameForCreate(Resource $resource)
     {
         return __('Create :resource', [
-            'resource' => (string) $resource->accusativeLabel(),
+            'resource' => (string) $resource->singularLabel(),
         ]);
     }
 
@@ -155,7 +165,7 @@ class Panel extends MergeValue implements JsonSerializable
     public static function defaultNameForUpdate(Resource $resource)
     {
         return __('Update :resource: :title', [
-            'resource' => $resource->genitiveLabel(),
+            'resource' => $resource->singularLabel(),
             'title' => $resource->title(),
         ]);
     }

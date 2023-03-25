@@ -61,7 +61,7 @@
 
         <CreateRelationButton
           v-if="canShowNewRelationModal"
-          v-tooltip="__('Create :resource', { resource: field.accusativeLabel })"
+          v-tooltip="__('Create :resource', { resource: field.singularLabel })"
           @click="openRelationModal"
           :dusk="`${field.attribute}-inline-create`"
         />

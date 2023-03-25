@@ -23,9 +23,11 @@ export default {
 
   data: () => ({ value: '' }),
 
-  mounted() {
+  created() {
     this.setInitialValue()
+  },
 
+  mounted() {
     // Add a default fill method for the field
     this.field.fill = this.fill
 
@@ -118,6 +120,13 @@ export default {
       return Boolean(
         this.field.readonly || get(this.field, 'extraAttributes.readonly')
       )
+    },
+
+    /**
+     * Determine if the field is accessed from Action
+     */
+    isActionRequest() {
+      return ['action-fullscreen', 'action-modal'].includes(this.mode)
     },
   },
 }

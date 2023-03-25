@@ -450,6 +450,8 @@ export default {
       try {
         await this.attachRequest()
 
+        window.scrollTo(0, 0)
+
         this.allowLeavingForm()
 
         this.submittedViaAttachAndAttachAnother = false

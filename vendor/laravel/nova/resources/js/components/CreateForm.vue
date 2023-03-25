@@ -4,7 +4,7 @@
       <Head
         :title="
           __('Create :resource', {
-            resource: resourceInformation.accusativeLabel,
+            resource: resourceInformation.singularLabel,
           })
         "
       />
@@ -259,6 +259,8 @@ export default {
           if (this.submittedViaCreateResource) {
             this.$emit('resource-created', { id, redirect })
           } else {
+            window.scrollTo(0, 0)
+
             // Reset the form by refetching the fields
             this.getFields()
             this.validationErrors = new Errors()

@@ -7,9 +7,12 @@
       <slot>
         <FormLabel
           :label-for="labelFor || field.uniqueKey"
+          class="space-x-1"
           :class="{ 'mb-2': shouldShowHelpText }"
         >
-          {{ fieldLabel }}
+          <span>
+            {{ fieldLabel }}
+          </span>
           <span v-if="field.required" class="text-red-500 text-sm">
             {{ __('*') }}
           </span>

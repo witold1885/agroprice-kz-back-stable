@@ -113,7 +113,7 @@ class IndexComponent extends Component
      */
     public function nextPage(Browser $browser)
     {
-        return $browser->click('@next')->waitForTable();
+        $browser->click('@next')->waitForTable();
     }
 
     /**
@@ -124,7 +124,7 @@ class IndexComponent extends Component
      */
     public function previousPage(Browser $browser)
     {
-        return $browser->click('@previous')->waitForTable();
+        $browser->click('@previous')->waitForTable();
     }
 
     /**
@@ -332,9 +332,9 @@ class IndexComponent extends Component
     public function openControlSelectorById(Browser $browser, $id)
     {
         $browser->closeCurrentDropdown()
-                ->whenAvailable('@'.$id.'-control-selector', function ($browser) {
-                    $browser->click('')->pause(300);
-                });
+            ->whenAvailable('@'.$id.'-control-selector', function ($browser) {
+                $browser->click('')->pause(300);
+            });
     }
 
     /**
@@ -353,7 +353,7 @@ class IndexComponent extends Component
             $browser->select('', $uriKey);
         });
 
-        $browser->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) use ($fieldCallback) {
+        $browser->elsewhereWhenAvailable(new Modals\ConfirmActionModalComponent(), function ($browser) use ($fieldCallback) {
             $fieldCallback($browser);
         });
     }
@@ -395,7 +395,7 @@ class IndexComponent extends Component
                 $browser->click('');
             })->pause(500);
 
-        $browser->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) use ($fieldCallback) {
+        $browser->elsewhereWhenAvailable(new Modals\ConfirmActionModalComponent(), function ($browser) use ($fieldCallback) {
             $fieldCallback($browser);
         });
     }
@@ -429,8 +429,7 @@ class IndexComponent extends Component
      */
     public function clickCheckboxForId(Browser $browser, $id)
     {
-        $browser->click('[dusk="'.$id.'-row"] input.checkbox')
-                        ->pause(175);
+        $browser->click('[dusk="'.$id.'-row"] input.checkbox')->pause(175);
     }
 
     /**
@@ -443,9 +442,9 @@ class IndexComponent extends Component
     public function replicateResourceById(Browser $browser, $id)
     {
         $browser->openControlSelectorById($id)
-                        ->elsewhereWhenAvailable('@'.$id.'-replicate-button', function ($browser) {
-                            $browser->click('');
-                        })->pause(500);
+            ->elsewhereWhenAvailable('@'.$id.'-replicate-button', function ($browser) {
+                $browser->click('');
+            })->pause(500);
     }
 
     /**
@@ -458,9 +457,9 @@ class IndexComponent extends Component
     public function previewResourceById(Browser $browser, $id)
     {
         $browser->openControlSelectorById($id)
-                        ->elsewhereWhenAvailable("@{$id}-preview-button", function ($browser) {
-                            $browser->click('');
-                        })->pause(500);
+            ->elsewhereWhenAvailable("@{$id}-preview-button", function ($browser) {
+                $browser->click('');
+            })->pause(500);
     }
 
     /**
@@ -473,9 +472,9 @@ class IndexComponent extends Component
     public function deleteResourceById(Browser $browser, $id)
     {
         $browser->click('@'.$id.'-delete-button')
-                        ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                            $browser->click('@confirm-delete-button');
-                        })->pause(500);
+            ->elsewhereWhenAvailable(new Modals\DeleteResourceModalComponent(), function ($browser) {
+                $browser->confirm();
+            })->pause(500);
     }
 
     /**
@@ -488,9 +487,9 @@ class IndexComponent extends Component
     public function restoreResourceById(Browser $browser, $id)
     {
         $browser->click('@'.$id.'-restore-button')
-                        ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                            $browser->click('@confirm-restore-button');
-                        })->pause(500);
+            ->elsewhereWhenAvailable(new Modals\RestoreResourceModalComponent(), function ($browser) {
+                $browser->confirm();
+            })->pause(500);
     }
 
     /**
@@ -502,13 +501,13 @@ class IndexComponent extends Component
     public function deleteSelected(Browser $browser)
     {
         $browser->click('@delete-menu')
-                    ->pause(300)
-                    ->elsewhere('', function ($browser) {
-                        $browser->click('[dusk="delete-selected-button"]')
-                            ->whenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                                $browser->click('@confirm-delete-button');
-                            });
-                    })->pause(1000);
+            ->pause(300)
+            ->elsewhere('', function ($browser) {
+                $browser->click('[dusk="delete-selected-button"]')
+                    ->elsewhereWhenAvailable(new Modals\DeleteResourceModalComponent(), function ($browser) {
+                        $browser->confirm();
+                    });
+            })->pause(1000);
     }
 
     /**
@@ -520,13 +519,13 @@ class IndexComponent extends Component
     public function restoreSelected(Browser $browser)
     {
         $browser->click('@delete-menu')
-                    ->pause(300)
-                    ->elsewhere('', function ($browser) {
-                        $browser->click('[dusk="restore-selected-button"]')
-                            ->whenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                                $browser->click('@confirm-restore-button');
-                            });
-                    })->pause(1000);
+            ->pause(300)
+            ->elsewhere('', function ($browser) {
+                $browser->click('[dusk="restore-selected-button"]')
+                    ->elsewhereWhenAvailable(new Modals\RestoreResourceModalComponent(), function ($browser) {
+                        $browser->confirm();
+                    });
+            })->pause(1000);
     }
 
     /**
@@ -538,13 +537,13 @@ class IndexComponent extends Component
     public function forceDeleteSelected(Browser $browser)
     {
         $browser->click('@delete-menu')
-                    ->pause(300)
-                    ->elsewhere('', function ($browser) {
-                        $browser->click('[dusk="force-delete-selected-button"]')
-                            ->whenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                                $browser->click('@confirm-delete-button');
-                            });
-                    })->pause(1000);
+            ->pause(300)
+            ->elsewhere('', function ($browser) {
+                $browser->click('[dusk="force-delete-selected-button"]')
+                    ->elsewhereWhenAvailable(new Modals\DeleteResourceModalComponent(), function ($browser) {
+                        $browser->confirm();
+                    });
+            })->pause(1000);
     }
 
     /**
@@ -561,8 +560,8 @@ class IndexComponent extends Component
 
         tap($this->selector(), function ($selector) use ($browser) {
             $browser->waitFor($selector)
-                    ->assertVisible($selector)
-                    ->scrollIntoView($selector);
+                ->assertVisible($selector)
+                ->scrollIntoView($selector);
         });
     }
 

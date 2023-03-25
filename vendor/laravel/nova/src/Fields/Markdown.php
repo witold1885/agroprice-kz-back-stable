@@ -3,18 +3,22 @@
 namespace Laravel\Nova\Fields;
 
 use Illuminate\Support\Arr;
+use Laravel\Nova\Contracts\Deletable as DeletableContract;
 use Laravel\Nova\Contracts\FilterableField;
 use Laravel\Nova\Contracts\Previewable;
+use Laravel\Nova\Contracts\Storable as StorableContract;
 use Laravel\Nova\Fields\Filters\TextFilter;
 use Laravel\Nova\Fields\Markdown\CommonMarkPreset;
 use Laravel\Nova\Fields\Markdown\DefaultPreset;
 use Laravel\Nova\Fields\Markdown\ZeroPreset;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Markdown extends Field implements FilterableField, Previewable
+class Markdown extends Field implements DeletableContract, FilterableField, Previewable, StorableContract
 {
     use Expandable,
         FieldFilterable,
+        HasAttachments,
+        Storable,
         SupportsDependentFields;
 
     /**
@@ -48,6 +52,30 @@ class Markdown extends Field implements FilterableField, Previewable
         'commonmark' => CommonMarkPreset::class,
         'zero' => ZeroPreset::class,
     ];
+
+    /**
+     * Hydrate the given attribute on the model based on the incoming request.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $requestAttribute
+     * @param  object  $model
+     * @param  string  $attribute
+     * @return void|\Closure
+     */
+    protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
+    {
+        return $this->fillAttributeWithAttachment($request, $requestAttribute, $model, $attribute);
+    }
+
+    /**
+     * Get the full path that the field is stored at on disk.
+     *
+     * @return string|null
+     */
+    public function getStoragePath()
+    {
+        return null;
+    }
 
     /**
      * Define the preset the field should use. Can be "commonmark", "zero", and "default".
@@ -124,6 +152,7 @@ class Markdown extends Field implements FilterableField, Previewable
             'shouldShow' => $this->shouldBeExpanded(),
             'preset' => $this->preset,
             'previewFor' => $this->previewFor($this->value ?? ''),
+            'withFiles' => $this->withFiles,
         ]);
     }
 }

@@ -84,6 +84,7 @@ trait Peekable
             return $this->morphToResource;
         }
 
+        /** @phpstan-ignore-next-line */
         return $this->belongsToResource;
     }
 }

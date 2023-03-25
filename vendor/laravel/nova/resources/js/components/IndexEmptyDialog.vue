@@ -19,7 +19,7 @@
     <h3 class="text-base font-normal mt-3">
       {{
         __('No :resource matched the given criteria.', {
-          resource: genitivePluralName,
+          resource: singularName,
         })
       }}
     </h3>
@@ -47,7 +47,6 @@ export default {
   props: [
     'create-button-label',
     'singularName',
-    'genitivePluralName',
     'resourceName',
     'viaResource',
     'viaResourceId',

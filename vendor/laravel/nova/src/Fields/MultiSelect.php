@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Laravel\Nova\Contracts\FilterableField;
 use Laravel\Nova\Fields\Filters\MultiSelectFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Util;
 
 class MultiSelect extends Field implements FilterableField
 {
@@ -129,6 +130,8 @@ class MultiSelect extends Field implements FilterableField
         }
 
         return collect($options ?? [])->map(function ($label, $value) {
+            $value = Util::safeInt($value);
+
             return is_array($label) ? $label + ['value' => $value] : ['label' => $label, 'value' => $value];
         })->values()->all();
     }

@@ -356,36 +356,6 @@ abstract class Resource implements ArrayAccess, JsonSerializable, UrlRoutable
     }
 
     /**
-     * Get the displayable singular label of the resource in Genitive case.
-     *
-     * @return string
-     */
-    public static function genitiveLabel()
-    {
-        return Str::singular(static::label());
-    }
-
-    /**
-     * Get the displayable singular label of the resource in Accusative case.
-     *
-     * @return string
-     */
-    public static function accusativeLabel()
-    {
-        return Str::singular(static::label());
-    }
-
-    /**
-     * Get the displayable plural label of the resource in Genitive case.
-     *
-     * @return string
-     */
-    public static function genitivePluralLabel()
-    {
-        return Str::plural(Str::title(Str::snake(class_basename(get_called_class()), ' ')));
-    }
-
-    /**
      * Get the value that should be displayed to represent the resource.
      *
      * @return string

@@ -1106,7 +1106,8 @@ trix-toolbar .trix-button-row .trix-button-group .trix-button.trix-active {
 }
 
 .CodeMirror-cursor {
-  @apply dark:border-l-white;
+  border-left: 1px solid black;
+  @apply dark:border-white;
 }
 
 .cm-fat-cursor .CodeMirror-cursor {

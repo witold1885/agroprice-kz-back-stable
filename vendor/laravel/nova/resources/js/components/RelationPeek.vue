@@ -5,6 +5,7 @@
     placement="top-start"
     theme="plain"
     @show="fetchOnce"
+    :auto-hide="true"
   >
     <template #default>
       <slot />

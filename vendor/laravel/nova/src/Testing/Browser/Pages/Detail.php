@@ -4,6 +4,9 @@ namespace Laravel\Nova\Testing\Browser\Pages;
 
 use Laravel\Dusk\Browser;
 use Laravel\Nova\Testing\Browser\Components\IndexComponent;
+use Laravel\Nova\Testing\Browser\Components\Modals\ConfirmActionModalComponent;
+use Laravel\Nova\Testing\Browser\Components\Modals\DeleteResourceModalComponent;
+use Laravel\Nova\Testing\Browser\Components\Modals\RestoreResourceModalComponent;
 
 class Detail extends Page
 {
@@ -41,8 +44,8 @@ class Detail extends Page
                 ->elsewhereWhenAvailable("@{$this->resourceId}-inline-action-{$uriKey}", function ($browser) {
                     $browser->click('');
                 })
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                    $browser->click('@confirm-action-button');
+                ->elsewhereWhenAvailable(new ConfirmActionModalComponent(), function ($browser) {
+                    $browser->confirm();
                 });
     }
 
@@ -81,8 +84,8 @@ class Detail extends Page
                 ->elsewhereWhenAvailable("@{$this->resourceId}-inline-action-{$uriKey}", function ($browser) {
                     $browser->click('');
                 })
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                    $browser->click('@cancel-action-button');
+                ->elsewhereWhenAvailable(new ConfirmActionModalComponent(), function ($browser) {
+                    $browser->cancel();
                 });
     }
 
@@ -178,8 +181,8 @@ class Detail extends Page
                 ->whenAvailable('@open-delete-modal-button', function ($browser) {
                     $browser->click('');
                 })
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                    $browser->click('@confirm-delete-button');
+                ->elsewhereWhenAvailable(new DeleteResourceModalComponent(), function ($browser) {
+                    $browser->confirm();
                 })->pause(1000);
     }
 
@@ -197,8 +200,8 @@ class Detail extends Page
                 ->whenAvailable('@open-restore-modal-button', function ($browser) {
                     $browser->click('');
                 })
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                    $browser->click('@confirm-restore-button');
+                ->elsewhereWhenAvailable(new RestoreResourceModalComponent(), function ($browser) {
+                    $browser->confirm();
                 })->pause(1000);
     }
 
@@ -216,8 +219,8 @@ class Detail extends Page
                 ->whenAvailable('@open-force-delete-modal-button', function ($browser) {
                     $browser->click('');
                 })
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) {
-                    $browser->click('@confirm-delete-button');
+                ->elsewhereWhenAvailable(new DeleteResourceModalComponent(), function ($browser) {
+                    $browser->confirm();
                 })->pause(1000);
     }
 

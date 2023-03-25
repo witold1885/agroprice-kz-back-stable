@@ -7,6 +7,7 @@ use Laravel\Nova\Contracts\FilterableField;
 use Laravel\Nova\Exceptions\NovaException;
 use Laravel\Nova\Fields\Filters\SelectFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Util;
 
 class Select extends Field implements FilterableField
 {
@@ -115,6 +116,8 @@ class Select extends Field implements FilterableField
         }
 
         return collect($options ?? [])->map(function ($label, $value) use ($searchable) {
+            $value = Util::safeInt($value);
+
             if ($searchable && isset($label['group'])) {
                 return [
                     'label' => $label['group'].' - '.$label['label'],

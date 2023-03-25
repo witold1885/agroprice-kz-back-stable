@@ -27,6 +27,7 @@ class DetailViewResource extends Resource
             $detail['fields'] = collect($detail['fields'])
                 ->when($request->viaResource, function ($fields) use ($request) {
                     return $fields->reject(function ($field) use ($request) {
+                        /** @var \Laravel\Nova\Fields\Field $field */
                         if ($field instanceof ListableField) {
                             return true;
                         } elseif (! $field instanceof RelatableField) {

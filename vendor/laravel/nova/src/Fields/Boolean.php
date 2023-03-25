@@ -59,11 +59,13 @@ class Boolean extends Field implements FilterableField
      * Resolve the default value for the field.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return bool
+     * @return bool|null
      */
     protected function resolveDefaultValue(NovaRequest $request)
     {
-        return parent::resolveDefaultValue($request) ?? false;
+        if ($request->isCreateOrAttachRequest() || $request->isActionRequest()) {
+            return parent::resolveDefaultValue($request) ?? false;
+        }
     }
 
     /**

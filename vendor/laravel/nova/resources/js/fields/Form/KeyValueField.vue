@@ -2,7 +2,7 @@
   <DefaultField
     :field="currentField"
     :errors="errors"
-    :full-width-content="mode === 'modal'"
+    :full-width-content="['modal', 'action-modal'].includes(mode)"
     :show-help-text="showHelpText"
   >
     <template #field>

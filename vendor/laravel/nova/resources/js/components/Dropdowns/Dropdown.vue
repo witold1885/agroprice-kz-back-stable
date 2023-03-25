@@ -66,6 +66,10 @@ export default {
       type: Boolean,
       default: true,
     },
+
+    triggerOverrideFunction: {
+      type: Function,
+    },
   },
 
   data: () => ({
@@ -101,6 +105,11 @@ export default {
      * Show the dropdown menu.
      */
     showMenu() {
+      if (this.triggerOverrideFunction) {
+        this.triggerOverrideFunction()
+        return
+      }
+
       if (this.debouncedHideMenu) {
         this.debouncedHideMenu.cancel()
         this.debouncedHideMenu = null

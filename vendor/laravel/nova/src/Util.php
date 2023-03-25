@@ -5,6 +5,7 @@ namespace Laravel\Nova;
 use BackedEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Stringable;
 
 class Util
 {
@@ -53,6 +54,27 @@ class Util
     {
         if (is_int($value) && $value >= 9007199254740991) {
             return (string) $value;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Hydrate the value to scalar (array, string, int etc...).
+     *
+     * @param  mixed  $value
+     * @return scalar
+     */
+    public static function hydrate($value)
+    {
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        } elseif (is_object($value) && ($value instanceof Stringable || method_exists($value, '__toString'))) {
+            return (string) $value;
+        } elseif (is_object($value) || is_array($value)) {
+            return rescue(function () use ($value) {
+                return json_encode($value);
+            }, $value);
         }
 
         return $value;

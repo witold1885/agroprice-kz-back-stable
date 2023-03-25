@@ -26,24 +26,18 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from '@/mixins'
+import {
+  FormField,
+  HandlesFieldAttachments,
+  HandlesValidationErrors,
+} from '@/mixins'
 
 export default {
   emits: ['field-changed'],
 
-  mixins: [HandlesValidationErrors, FormField],
+  mixins: [HandlesValidationErrors, HandlesFieldAttachments, FormField],
 
-  data: () => ({ draftId: null, index: 0 }),
-
-  async created() {
-    const {
-      data: { draftId },
-    } = await Nova.request().get(
-      `/nova-api/${this.resourceName}/trix-attachment/${this.field.attribute}/draftId`
-    )
-
-    this.draftId = draftId
-  },
+  data: () => ({ index: 0 }),
 
   mounted() {
     Nova.$on(this.fieldAttributeValueEventName, this.listenToValueChanges)
@@ -52,7 +46,7 @@ export default {
   beforeUnmount() {
     Nova.$off(this.fieldAttributeValueEventName, this.listenToValueChanges)
 
-    this.cleanUp()
+    this.clearAttachments()
   },
 
   methods: {
@@ -66,12 +60,9 @@ export default {
     },
 
     fill(formData) {
-      this.fillIfVisible(formData, this.field.attribute, this.value || '')
-      this.fillIfVisible(
-        formData,
-        `${this.field.attribute}DraftId`,
-        this.draftId
-      )
+      this.fillIfVisible(formData, this.fieldAttribute, this.value || '')
+
+      this.fillAttachmentDraftId(formData)
     },
 
     /**
@@ -79,71 +70,28 @@ export default {
      */
     handleFileAdded({ attachment }) {
       if (attachment.file) {
-        this.uploadAttachment(attachment)
-      }
-    },
-
-    /**
-     * Upload an attachment
-     */
-    uploadAttachment(attachment) {
-      const data = new FormData()
-      data.append('Content-Type', attachment.file.type)
-      data.append('attachment', attachment.file)
-      data.append('draftId', this.draftId)
-
-      Nova.request()
-        .post(
-          `/nova-api/${this.resourceName}/trix-attachment/${this.field.attribute}`,
-          data,
-          {
-            onUploadProgress: function (progressEvent) {
-              attachment.setUploadProgress(
-                Math.round((progressEvent.loaded * 100) / progressEvent.total)
-              )
-            },
-          }
-        )
-        .then(({ data: { url } }) => {
+        const onCompleted = url => {
           return attachment.setAttributes({
             url: url,
             href: url,
           })
-        })
-        .catch(error => {
-          Nova.error(__('An error occurred while uploading the file.'))
-        })
-    },
+        }
 
-    /**
-     * Remove an attachment from the server
-     */
-    handleFileRemoved({ attachment: { attachment } }) {
-      Nova.request()
-        .delete(
-          `/nova-api/${this.resourceName}/trix-attachment/${this.field.attribute}`,
-          {
-            params: {
-              attachmentUrl: attachment.attributes.values.url,
-            },
-          }
-        )
-        .then(response => {})
-        .catch(error => {})
-    },
-
-    /**
-     * Purge pending attachments for the draft
-     */
-    cleanUp() {
-      if (this.field.withFiles) {
-        Nova.request()
-          .delete(
-            `/nova-api/${this.resourceName}/trix-attachment/${this.field.attribute}/${this.draftId}`
+        const onUploadProgress = progressEvent => {
+          attachment.setUploadProgress(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
           )
-          .then(response => {})
-          .catch(error => {})
+        }
+
+        this.uploadAttachment(attachment.file, {
+          onCompleted,
+          onUploadProgress,
+        })
       }
+    },
+
+    handleFileRemoved({ attachment: { attachment } }) {
+      this.removeAttachment(attachment.attributes.values.url)
     },
 
     listenToValueChanges(value) {

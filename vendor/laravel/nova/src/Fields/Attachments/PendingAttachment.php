@@ -1,15 +1,17 @@
 <?php
 
-namespace Laravel\Nova\Trix;
+namespace Laravel\Nova\Fields\Attachments;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Nova\Fields\Trix;
+use Laravel\Nova\Contracts\Storable;
 
 /**
  * @property string $attachment
  * @property string $disk
+ *
+ * @phpstan-type TPersistModel \Laravel\Nova\Fields\Attachments\Attachment
  */
 class PendingAttachment extends Model
 {
@@ -20,7 +22,7 @@ class PendingAttachment extends Model
      *
      * @var string
      */
-    protected $table = 'nova_pending_trix_attachments';
+    protected $table = 'nova_pending_field_attachments';
 
     /**
      * The attributes that aren't mass assignable.
@@ -30,14 +32,33 @@ class PendingAttachment extends Model
     protected $guarded = [];
 
     /**
+     * The persist attachment model.
+     *
+     * @var class-string<TPersistModel>
+     */
+    protected static $persistModel = Attachment::class;
+
+    /**
+     * Get persist model instance.
+     *
+     * @return TPersistModel
+     */
+    public function getPersistModel()
+    {
+        return new static::$persistModel;
+    }
+
+    /**
      * Persist the given draft's pending attachments.
      *
      * @param  string  $draftId
-     * @param  \Laravel\Nova\Fields\Trix  $field
+     * @param  \Laravel\Nova\Contracts\Storable  $field
      * @param  mixed  $model
      * @return void
+     *
+     * @phpstan-param \Laravel\Nova\Fields\Field&\Laravel\Nova\Contracts\Storable  $field
      */
-    public static function persistDraft($draftId, Trix $field, $model)
+    public static function persistDraft($draftId, Storable $field, $model)
     {
         static::where('draft_id', $draftId)->get()->each->persist($field, $model);
     }
@@ -45,15 +66,17 @@ class PendingAttachment extends Model
     /**
      * Persist the pending attachment.
      *
-     * @param  \Laravel\Nova\Fields\Trix  $field
+     * @param  \Laravel\Nova\Contracts\Storable  $field
      * @param  mixed  $model
      * @return void
+     *
+     * @phpstan-param \Laravel\Nova\Fields\Field&\Laravel\Nova\Contracts\Storable  $field
      */
-    public function persist(Trix $field, $model)
+    public function persist(Storable $field, $model)
     {
-        $disk = $field->getStorageDisk();
+        $disk = $field->getStorageDisk() ?? $field->getDefaultStorageDisk();
 
-        Attachment::create([
+        static::$persistModel::create([
             'attachable_type' => $model->getMorphClass(),
             'attachable_id' => $model->getKey(),
             'attachment' => $this->attachment,

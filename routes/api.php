@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\InfoController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,4 +60,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'product'], function () {
         Route::post('save', [ProductController::class, 'saveProduct']);
         Route::get('get/{url}', [ProductController::class, 'getProduct']);
+    });
+
+    Route::group(['prefix' => 'profile'], function () {
+        Route::post('update', [ProfileController::class, 'updateProfile']);
     });

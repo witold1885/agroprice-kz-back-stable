@@ -3,6 +3,8 @@
 namespace Laravel\Nova\Query;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\LazyCollection;
 use Laravel\Nova\Contracts\QueryBuilder;
@@ -23,7 +25,7 @@ class Builder implements QueryBuilder
     /**
      * The original query builder instance.
      *
-     * @var \Illuminate\Database\Eloquent\Builder|null
+     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation|null
      */
     protected $originalQueryBuilder;
 
@@ -62,7 +64,7 @@ class Builder implements QueryBuilder
     /**
      * Build a "whereKey" query for the given resource.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation  $query
      * @param  string  $key
      * @return $this
      */
@@ -81,7 +83,7 @@ class Builder implements QueryBuilder
      * Build a "search" query for the given resource.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation  $query
      * @param  string|null  $search
      * @param  array<int, \Laravel\Nova\Query\ApplyFilter>  $filters
      * @param  array<string, string>  $orderings
@@ -101,6 +103,15 @@ class Builder implements QueryBuilder
             if ($hasSearchKeyword) {
                 $this->queryBuilder = $this->resourceClass::buildIndexQueryUsingScout($request, $search, $withTrashed);
                 $search = '';
+
+                if ($query instanceof MorphToMany || $query instanceof BelongsToMany) {
+                    $this->tap(function ($queryBuilder) use ($query) {
+                        $queryBuilder->whereIn(
+                            $this->resourceClass::newModel()->getQualifiedKeyName(),
+                            $query->allRelatedIds()
+                        );
+                    });
+                }
             }
 
             if (! $hasSearchKeyword && ! $hasOrderings) {

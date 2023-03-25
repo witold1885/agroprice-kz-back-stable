@@ -43,8 +43,12 @@ export default {
       authorizedToRestoreAnyResources: computed(
         () => this.authorizedToRestoreAnyResources
       ),
+      selectedResourcesCount: computed(() => this.selectedResources.length),
       selectAllChecked: computed(() => this.selectAllChecked),
       selectAllMatchingChecked: computed(() => this.selectAllMatchingChecked),
+      selectAllOrSelectAllMatchingChecked: computed(
+        () => this.selectAllOrSelectAllMatchingChecked
+      ),
       selectAllAndSelectAllMatchingChecked: computed(
         () => this.selectAllAndSelectAllMatchingChecked
       ),
@@ -362,6 +366,10 @@ export default {
       return this.selectAllChecked && this.selectAllMatchingChecked
     },
 
+    selectAllOrSelectAllMatchingChecked() {
+      return this.selectAllChecked || this.selectAllMatchingChecked
+    },
+
     /**
      * Determine if all matching resources are selected.
      */
@@ -457,45 +465,6 @@ export default {
 
       if (this.resourceInformation) {
         return capitalize(this.resourceInformation.singularLabel)
-      }
-    },
-
-    /**
-     * Get the singular name for the resource in Genitive case
-     */
-    genitiveName() {
-      if (this.isRelation && this.field) {
-        return capitalize(this.field.genitiveLabel)
-      }
-
-      if (this.resourceInformation) {
-        return capitalize(this.resourceInformation.genitiveLabel)
-      }
-    },
-
-    /**
-     * Get the singular name for the resource in Accusative case
-     */
-    accusativeName() {
-      if (this.isRelation && this.field) {
-        return capitalize(this.field.accusativeLabel)
-      }
-
-      if (this.resourceInformation) {
-        return capitalize(this.resourceInformation.accusativeLabel)
-      }
-    },
-
-    /**
-     * Get the plural name for the resource in Genitive case
-     */
-    genitivePluralName() {
-      if (this.isRelation && this.field) {
-        return capitalize(this.field.genitivePluralName)
-      }
-
-      if (this.resourceInformation) {
-        return capitalize(this.resourceInformation.genitivePluralLabel)
       }
     },
 
@@ -759,7 +728,7 @@ export default {
       return (
         this.disablePagination !== true &&
         this.resourceResponse &&
-        this.hasResources
+        (this.hasResources || this.hasPreviousPage)
       )
     },
 

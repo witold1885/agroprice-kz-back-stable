@@ -19,7 +19,7 @@
             :removable="shouldShowRemoveButton"
             @removed="confirmRemoval"
             :rounded="field.rounded"
-            :dusk="field.attribute + '-delete-link'"
+            :dusk="`${field.attribute}-delete-link`"
           />
         </div>
 
@@ -33,13 +33,13 @@
         <!-- DropZone -->
         <DropZone
           v-if="shouldShowField"
-          @change="handleFileChange"
           :files="files"
+          @file-changed="handleFileChange"
           @file-removed="removeFile"
           :rounded="field.rounded"
           :accepted-types="field.acceptedTypes"
           :disabled="file?.processing"
-          :dusk="field.attribute + '-delete-link'"
+          :dusk="`${field.attribute}-delete-link`"
           :input-dusk="field.attribute"
         />
       </div>
@@ -57,6 +57,9 @@ function createFile(file) {
     extension: file.name.split('.').pop(),
     type: file.type,
     originalFile: file,
+    vapor: false,
+    processing: false,
+    progress: 0,
   }
 }
 
@@ -147,6 +150,7 @@ export default {
       this.file = createFile(newFiles[0])
 
       if (this.isVaporField) {
+        this.file.vapor = true
         this.uploadVaporFiles()
       }
     },
@@ -159,13 +163,18 @@ export default {
       this.file.processing = true
       this.$emit('file-upload-started')
 
-      Vapor.store(this.file.originalFile)
+      Vapor.store(this.file.originalFile, {
+        progress: progress => {
+          this.file.progress = Math.round(progress * 100)
+        },
+      })
         .then(response => {
           this.vaporFile.key = response.key
           this.vaporFile.uuid = response.uuid
           this.vaporFile.filename = this.file.name
           this.vaporFile.extension = this.file.extension
           this.file.processing = false
+          this.file.progress = 100
           this.$emit('file-upload-finished')
         })
         .catch(error => {

@@ -68,8 +68,10 @@
         :resource-name="resourceName"
         :restore-all-matching-resources="restoreAllMatchingResources"
         :restore-selected-resources="restoreSelectedResources"
+        :current-page-count="resources.length"
         :select-all-checked="selectAllChecked"
         :select-all-matching-checked="selectAllMatchingResources"
+        @deselect="clearResourceSelections"
         :selected-resources="selectedResources"
         :selected-resources-for-action-selector="
           selectedResourcesForActionSelector
@@ -104,7 +106,6 @@
             v-if="!resources.length"
             :create-button-label="createButtonLabel"
             :singular-name="singularName"
-            :genitive-plural-name="genitivePluralName"
             :resource-name="resourceName"
             :via-resource="viaResource"
             :via-resource-id="viaResourceId"

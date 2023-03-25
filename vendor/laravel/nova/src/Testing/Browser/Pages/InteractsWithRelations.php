@@ -3,6 +3,8 @@
 namespace Laravel\Nova\Testing\Browser\Pages;
 
 use Laravel\Dusk\Browser;
+use Laravel\Nova\Testing\Browser\Components\Controls\RelationSelectControlComponent;
+use Laravel\Nova\Testing\Browser\Components\Modals\CreateRelationModalComponent;
 
 trait InteractsWithRelations
 {
@@ -18,8 +20,8 @@ trait InteractsWithRelations
      */
     public function selectRelation(Browser $browser, $attribute, $value = null)
     {
-        $browser->whenAvailable('select[dusk="'.$attribute.'"]', function (Browser $browser) use ($value) {
-            $browser->select('', $value);
+        $browser->whenAvailable(new RelationSelectControlComponent($attribute), function (Browser $browser) use ($value) {
+            $browser->assertSelectHasOption('', $value)->select('', $value);
         });
     }
 
@@ -41,7 +43,6 @@ trait InteractsWithRelations
      *
      * @param  \Laravel\Dusk\Browser  $browser
      * @param  string  $attribute
-     * @param  string  $search
      * @return void
      */
     public function resetSearchRelation(Browser $browser, $attribute)
@@ -55,6 +56,8 @@ trait InteractsWithRelations
      * @param  \Laravel\Dusk\Browser  $browser
      * @param  string  $attribute
      * @return void
+     *
+     * @deprecated
      */
     public function selectFirstRelation(Browser $browser, $attribute)
     {
@@ -70,7 +73,7 @@ trait InteractsWithRelations
      */
     public function firstSearchableResult(Browser $browser, $attribute)
     {
-        $this->selectFirstRelation($browser, $attribute);
+        $this->selectFirstSearchResult($browser, $attribute);
     }
 
     /**
@@ -79,6 +82,8 @@ trait InteractsWithRelations
      * @param  \Laravel\Dusk\Browser  $browser
      * @param  string  $attribute
      * @return void
+     *
+     * @deprecated
      */
     public function closeSearchableResult(Browser $browser, $attribute)
     {
@@ -153,7 +158,7 @@ trait InteractsWithRelations
     {
         $browser->whenAvailable("@{$uriKey}-inline-create", function ($browser) use ($fieldCallback) {
             $browser->click('')
-                ->elsewhereWhenAvailable('.modal[data-modal-open=true]', function ($browser) use ($fieldCallback) {
+                ->elsewhereWhenAvailable(new CreateRelationModalComponent(), function ($browser) use ($fieldCallback) {
                     $fieldCallback($browser);
                 });
         });

@@ -201,7 +201,7 @@ export default {
   mounted() {
     document.addEventListener('keydown', this.handleEscape)
 
-    if (this.mode === 'modal') {
+    if (['modal', 'action-modal'].includes(this.mode)) {
       document.addEventListener('click', this.handleOutsideClick)
     }
   },
@@ -209,7 +209,7 @@ export default {
   beforeUnmount() {
     document.removeEventListener('keydown', this.handleEscape)
 
-    if (this.mode === 'modal') {
+    if (['modal', 'action-modal'].includes(this.mode)) {
       document.removeEventListener('click', this.handleOutsideClick)
     }
   },

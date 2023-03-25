@@ -16,8 +16,10 @@
         <SelectAllDropdown
           v-if="shouldShowCheckBoxes"
           :all-matching-resource-count="allMatchingResourceCount"
+          :current-page-count="currentPageCount"
           @toggle-select-all="toggleSelectAll"
           @toggle-select-all-matching="toggleSelectAllMatching"
+          @deselect="$emit('deselect')"
         />
       </div>
 
@@ -126,7 +128,7 @@
 
 <script>
 export default {
-  emits: ['start-polling', 'stop-polling'],
+  emits: ['start-polling', 'stop-polling', 'deselect'],
 
   props: [
     'actionsEndpoint',
@@ -160,6 +162,7 @@ export default {
     'resources',
     'resourceInformation',
     'resourceName',
+    'currentPageCount',
     'restoreAllMatchingResources',
     'restoreSelectedResources',
     'selectAllChecked',

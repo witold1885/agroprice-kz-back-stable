@@ -1,11 +1,18 @@
 <?php
 
-namespace Laravel\Nova\Trix;
+namespace Laravel\Nova\Fields\Attachments;
 
 use Illuminate\Http\Request;
 
 class DetachAttachment
 {
+    /**
+     * The attachment model.
+     *
+     * @var class-string<\Laravel\Nova\Fields\Attachments\Attachment>
+     */
+    public static $model = Attachment::class;
+
     /**
      * Delete an attachment from the field.
      *
@@ -14,7 +21,7 @@ class DetachAttachment
      */
     public function __invoke(Request $request)
     {
-        Attachment::where('url', $request->attachmentUrl)
+        static::$model::where('url', $request->attachmentUrl)
                         ->get()
                         ->each
                         ->purge();

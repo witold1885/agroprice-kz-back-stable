@@ -17,7 +17,12 @@
         :options="currentField.options"
         :disabled="currentlyIsReadonly"
       >
-        <option value="" :selected="!hasValue" :disabled="!field.nullable">
+        <option
+          v-if="shouldShowPlaceholder"
+          value=""
+          :selected="!hasValue"
+          :disabled="!currentField.nullable"
+        >
           {{ placeholder }}
         </option>
       </MutilSelectControl>
@@ -28,6 +33,7 @@
 <script>
 import find from 'lodash/find'
 import { DependentFormField, HandlesValidationErrors } from '@/mixins'
+import filled from '@/util/filled'
 
 export default {
   mixins: [HandlesValidationErrors, DependentFormField],
@@ -123,6 +129,10 @@ export default {
       return Boolean(
         !(this.value === undefined || this.value === null || this.value === '')
       )
+    },
+
+    shouldShowPlaceholder() {
+      return filled(this.currentField.placeholder) || this.currentField.nullable
     },
   },
 }

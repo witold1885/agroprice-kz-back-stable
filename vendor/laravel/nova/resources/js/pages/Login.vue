@@ -52,7 +52,7 @@
           :checked="form.remember"
           @input="() => (form.remember = !form.remember)"
         >
-          {{ __('Remember me') }}
+          <span>{{ __('Remember me') }}</span>
         </CheckboxWithLabel>
 
         <div
@@ -109,7 +109,7 @@ export default {
       try {
         const { redirect } = await this.form.post(Nova.url('/login'))
 
-        let path = '/'
+        let path = { url: Nova.url('/'), remote: true }
 
         if (redirect !== undefined && redirect !== null) {
           path = { url: redirect, remote: true }

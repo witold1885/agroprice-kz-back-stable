@@ -33,6 +33,7 @@ class ImpersonateController extends Controller
 
         $currentUser = Nova::user($request);
 
+        /** @var \Illuminate\Contracts\Auth\Authenticatable&\Illuminate\Database\Eloquent\Model $user */
         $user = $userModel::findOrFail($request->input('resourceId'));
 
         // Now that we're guaranteed to be a 'real' user, we'll make sure we're
