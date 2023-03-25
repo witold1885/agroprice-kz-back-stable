@@ -36,8 +36,8 @@ class ProfileController extends Controller
             'user_id' => $request->user_id,
         ], [
             'user_id' => $request->user_id,
-            'fullname' => $request->profile['fullname'],
-            'phone' => $request->profile['phone'],
+            'fullname' => $request->fullname,
+            'phone' => $request->phone,
         ]);
 
         return response()->json(['success' => true]);
