@@ -52,9 +52,9 @@ class ProfileController extends Controller
             $limit = 20;
             $offset = ($page - 1) * $limit;
 
-            $products = Product::where('user_id', $request->user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+            $products = Product::where('user_id', $user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
-            $total = Product::where('user_id', $request->user_id)->count();
+            $total = Product::where('user_id', $user_id)->count();
 
             return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
         } catch (\ErrorException $e) {
