@@ -64,4 +64,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
     Route::group(['prefix' => 'profile'], function () {
         Route::post('update', [ProfileController::class, 'updateProfile']);
+        Route::get('products/{user_id}/{page?}', [ProfileController::class, 'getProfileProducts']);
     });
