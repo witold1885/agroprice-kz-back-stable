@@ -38,6 +38,8 @@ class ProfileController extends Controller
             'user_id' => $request->user_id,
             'fullname' => $request->fullname,
             'phone' => $request->phone,
+            'birthdate' => $request->birthdate,
+            'gender' => $request->gender,
         ]);
 
         return response()->json(['success' => true]);
