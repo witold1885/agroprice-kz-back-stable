@@ -16,6 +16,8 @@ class UserProfile extends Model
         'phone',
         'whatsapp',
         'avatar',
+        'birthdate',
+        'gender',
     ];
 
     public function user()
