@@ -97,12 +97,12 @@ class ProfileController extends Controller
         try {
             $product = Product::where('id', $product_id)->with('location')->with('productImages')->first();
 
-            $product->categories = [];
+            /*$product->categories = [];
             $product_categories = ProductCategory::where('product_id', $product->id)->get();
             foreach ($product_categories as $product_category) {
                 $category = Category::find($product_category->category_id);
                 if ($category) $product->categories[] = $category;
-            }
+            }*/
 
             if (!$product) {
                 return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
