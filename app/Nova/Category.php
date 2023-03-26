@@ -236,13 +236,14 @@ class Category extends Resource
         if (!$modelObject->meta_title) {
             $modelObject->meta_title = $modelObject->name;
         }
-
+        Log::info($modelObject);
+        
         // $modelObject->path = implode(' > ', array_reverse(self::getSelfPath($modelObject->id)));
 
         return $fillFields;
     }
 
-    public static function afterSave(Request $request, $model)
+    public static function afterCreate(Request $request, $model)
     {
         if (Cache::store('redis')->has('categories')) {
             $categoriesArray = Cache::store('redis')->get('categories');
