@@ -178,7 +178,9 @@ class ProductController extends Controller
                     }
                 }
 
-                $product->similar = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->get();
+                $product->similar = Product::whereIn('id', $products_ids)
+                    ->with('user')->with('location')->with('productImages')
+                    ->take(8)->inRandomOrder()->get();
             }
             else {
                 $product->similar = [];
