@@ -73,21 +73,6 @@ class ProfileController extends Controller
         }
     }
 
-    public function archivateProduct(Request $request)
-    {
-        try {
-            $product = Product::find($request->product_id);
-
-            if (!$product) {
-                return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
-            }
-
-            return response()->json(['success' => true, 'product' => $product]);
-        } catch (\ErrorException $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
-        }
-    }
-
     public function changeProductStatus(Request $request)
     {
         try {
@@ -98,6 +83,21 @@ class ProfileController extends Controller
             }
 
             $product->update(['status' => $request->status]);
+
+            return response()->json(['success' => true, 'product' => $product]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getProduct($product_id)
+    {
+        try {
+            $product = Product::find($product_id);
+
+            if (!$product) {
+                return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
+            }
 
             return response()->json(['success' => true, 'product' => $product]);
         } catch (\ErrorException $e) {
