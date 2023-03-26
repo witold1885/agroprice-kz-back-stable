@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->integer('price');
             $table->boolean('price_negotiable')->default(false);
             $table->integer('location_id');
-            $table->enum('status', ['draft', 'published', 'moderating', 'accepted', 'declined']);
+            $table->enum('status', ['draft', 'published', 'moderating', 'accepted', 'declined', 'archive', 'trash']);
             $table->timestamps();
         });
     }
