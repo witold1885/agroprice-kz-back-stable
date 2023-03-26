@@ -256,6 +256,20 @@ class Category extends Resource
         }
     }
 
+    public static function afterUpdate(Request $request, $model)
+    {
+        $path = implode(' > ', array_reverse(self::getSelfPath($model->id)));
+        Log::info($path);
+        $model->update(['path' => $path]);
+        if (Cache::store('redis')->has('categories')) {
+            $categoriesArray = Cache::store('redis')->get('categories');
+            // $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
+            $categoriesArray[$model->id] = $path;
+            asort($categoriesArray);
+            Cache::store('redis')->put('categories', $categoriesArray, 3600);
+        }
+    }
+
     /**
      * Get the cards available for the request.
      *
