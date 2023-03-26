@@ -236,9 +236,10 @@ class Category extends Resource
         if (!$modelObject->meta_title) {
             $modelObject->meta_title = $modelObject->name;
         }
-        Log::info($modelObject);
-        
-        // $modelObject->path = implode(' > ', array_reverse(self::getSelfPath($modelObject->id)));
+
+        if (isset($modelObject->id)) {
+            $modelObject->path = implode(' > ', array_reverse(self::getSelfPath($modelObject->id)));
+        }
 
         return $fillFields;
     }
@@ -249,7 +250,6 @@ class Category extends Resource
             $categoriesArray = Cache::store('redis')->get('categories');
             // $categoriesArray[$model->id] = implode(' > ', array_reverse(self::getSelfPath($model->id)));
             $path = implode(' > ', array_reverse(self::getSelfPath($model->id)));
-            Log::info($path);
             $categoriesArray[$model->id] = $path;
             asort($categoriesArray);
             Cache::store('redis')->put('categories', $categoriesArray, 3600);
