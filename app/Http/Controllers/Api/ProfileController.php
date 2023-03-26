@@ -95,7 +95,7 @@ class ProfileController extends Controller
     public function getProduct($product_id)
     {
         try {
-            $product = Product::where('id', $product_id)->with('location')->with('productImages')->first();
+            $product = Product::where('id', $product_id)->with('user')->with('location')->with('productImages')->first();
 
             if (!$product) {
                 return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
