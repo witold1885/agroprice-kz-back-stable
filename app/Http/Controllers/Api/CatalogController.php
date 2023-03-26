@@ -27,10 +27,10 @@ class CatalogController extends Controller
 
             $children = Category::where('parent_id', $category->id)->orderBy('order', 'asc')->get()->toArray();
 
-            usort($children, function($a, $b) {
+            /*usort($children, function($a, $b) {
                 if ($a['order'] == $b['order']) return 0;
                 return $a['order'] > $b['order'] ? 1 : -1;
-            });
+            });*/
 
             $category->children = $children;
 
