@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\Category;
 
 class ProfileController extends Controller
 {
@@ -93,7 +95,14 @@ class ProfileController extends Controller
     public function getProduct($product_id)
     {
         try {
-            $product = Product::find($product_id);
+            $product = Product::where('id', $product_id)->with('location')->with('productImages')->first();
+
+            $product->categories = [];
+            $product_categories = ProductCategory::where('product_id', $product->id)->get();
+            foreach ($product_categories as $product_category) {
+                $category = Category::find($product_category->category_id);
+                if ($category) $product->categories[] = $category;
+            }
 
             if (!$product) {
                 return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
