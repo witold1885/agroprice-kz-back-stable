@@ -245,6 +245,7 @@ class Category extends Resource
     public static function afterCreate(Request $request, $model)
     {
         $path = implode(' > ', array_reverse(self::getSelfPath($model->id)));
+        Log::info($path);
         $model->update(['path' => $path]);
         if (Cache::store('redis')->has('categories')) {
             $categoriesArray = Cache::store('redis')->get('categories');
