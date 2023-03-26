@@ -66,4 +66,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('update', [ProfileController::class, 'updateProfile']);
         Route::get('products/{user_id}/{page?}/{status?}', [ProfileController::class, 'getProfileProducts']);
         Route::post('products/archivate', [ProfileController::class, 'archivateProduct'])->middleware('jwt.verify');
+        Route::post('products/change-status', [ProfileController::class, 'changeProductStatus'])->middleware('jwt.verify');
     });
