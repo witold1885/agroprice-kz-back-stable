@@ -14,7 +14,7 @@ class AlterTableProductsChangeStatus extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->enum('status', ['draft', 'published', 'moderating', 'accepted', 'declined', 'archive', 'trash']);
+            $table->enum('status', ['draft', 'published', 'moderating', 'accepted', 'declined', 'archive', 'trash'])->change();
         });
     }
 
