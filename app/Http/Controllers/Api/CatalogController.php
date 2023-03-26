@@ -93,7 +93,7 @@ class CatalogController extends Controller
     public function getChildCategories($parent_id)
     {
         try {
-            $categories = Category::where('parent_id', $parent_id)->get();
+            $categories = Category::where('parent_id', $parent_id)->orderBy('order', 'asc')->get();
 
             return response()->json(['success' => true, 'categories' => $categories]);
         } catch (\ErrorException $e) {
