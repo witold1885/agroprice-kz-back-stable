@@ -46,15 +46,21 @@ class ProfileController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function getProfileProducts($user_id, $page = 1)
+    public function getProfileProducts($user_id, $page = 1, $status = '')
     {
         try {
             $limit = 20;
             $offset = ($page - 1) * $limit;
 
-            $products = Product::where('user_id', $user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-
-            $total = Product::where('user_id', $user_id)->count();
+            if (!$status) {
+                $products = Product::where('user_id', $user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::where('user_id', $user_id)->count();
+            }
+            else {
+                $products = Product::where('user_id', $user_id)->where('status', $status)
+                    ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::where('user_id', $user_id)->where('status', $status)->count();
+            }
 
             return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
         } catch (\ErrorException $e) {
