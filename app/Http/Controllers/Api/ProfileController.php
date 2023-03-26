@@ -56,6 +56,11 @@ class ProfileController extends Controller
                 $products = Product::where('user_id', $user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
                 $total = Product::where('user_id', $user_id)->count();
             }
+            elseif ($status == 'published') {
+                $products = Product::where('user_id', $user_id)->where('status', 'published')->orWhere('status', 'accepted')
+                    ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::where('user_id', $user_id)->where('status', $status)->count();
+            }
             else {
                 $products = Product::where('user_id', $user_id)->where('status', $status)
                     ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
