@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('password/check/{token}', [AuthController::class, 'checkPasswordResetToken']);
     Route::post('password/change', [AuthController::class, 'changePassword']);
 
-    Route::group(['middleware'=>'jwt.verify'], function() {
+    Route::group(['middleware' => 'jwt.verify'], function() {
         Route::get('user', [AuthController::class, 'getUser']);
     });
 
@@ -65,4 +65,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'profile'], function () {
         Route::post('update', [ProfileController::class, 'updateProfile']);
         Route::get('products/{user_id}/{page?}/{status?}', [ProfileController::class, 'getProfileProducts']);
+        Route::post('products/archivate', [ProfileController::class, 'archivateProduct'])->middleware('jwt.verify');
     });

@@ -72,4 +72,19 @@ class ProfileController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
+    public function archivateProduct(Request $request)
+    {
+        try {
+            $product = Product::find($request->product_id);
+
+            if (!$product) {
+                return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
+            }
+
+            return response()->json(['success' => true, 'product' => $product]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 }
