@@ -68,5 +68,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('products/get/{product_id}', [ProfileController::class, 'getProduct'])->middleware('jwt.verify');
         Route::post('products/change-status', [ProfileController::class, 'changeProductStatus'])->middleware('jwt.verify');
         Route::post('products/add-favorite', [ProfileController::class, 'addFavoriteProduct'])->middleware('jwt.verify');
+        Route::post('products/del-favorite', [ProfileController::class, 'delFavoriteProduct'])->middleware('jwt.verify');
         Route::get('favorites/all/{user_id}/{page?}', [ProfileController::class, 'getProfileFavorites']);
     });

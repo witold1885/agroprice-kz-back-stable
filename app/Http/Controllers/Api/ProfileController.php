@@ -150,6 +150,21 @@ class ProfileController extends Controller
         }
     }
 
+    public function delFavoriteProduct(Request $request)
+    {
+        try {
+            $user_favorite = UserFavorite::where('user_id', $request->user_id)->where('product_id', $request->product_id)->first();
+
+            if ($user_favorite) {
+                $user_favorite->delete();
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function getProfileFavorites($user_id, $page = 1)
     {
         try {
