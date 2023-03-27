@@ -69,6 +69,8 @@ class ProfileController extends Controller
                 $total = Product::where('user_id', $user_id)->where('status', $status)->count();
             }
 
+            $pages = ceil($total / $limit);
+
             /*$query = Product::where('user_id', $user_id);
             if ($status) {
                 if ($status == 'published') {
@@ -84,7 +86,7 @@ class ProfileController extends Controller
                 $query->where('name', 'like')
             }*/
 
-            return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
+            return response()->json(['success' => true, 'products' => $products, 'pages' => $pages]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
