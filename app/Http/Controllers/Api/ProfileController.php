@@ -63,7 +63,7 @@ class ProfileController extends Controller
                 $extension = $request->avatar->getClientOriginalExtension();                
                 $filename = $user->name . '.' . $extension;
                 $path = $request->avatar->move(storage_path('app/public/users'), $filename);
-                $profile->update(['avatar' => $path]);
+                $profile->update(['avatar' => 'users/' . $filename]);
                 return response()->json(['success' => true]);
             }
             else {
