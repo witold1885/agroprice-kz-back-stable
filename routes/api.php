@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'profile'], function () {
         Route::post('update', [ProfileController::class, 'updateProfile']);
         Route::get('products/all/{user_id}/{page?}/{status?}', [ProfileController::class, 'getProfileProducts']);
-        Route::post('products/change-status', [ProfileController::class, 'changeProductStatus'])->middleware('jwt.verify');
         Route::get('products/get/{product_id}', [ProfileController::class, 'getProduct'])->middleware('jwt.verify');
+        Route::post('products/change-status', [ProfileController::class, 'changeProductStatus'])->middleware('jwt.verify');
+        Route::post('products/add-favorite', [ProfileController::class, 'addFavoriteProduct'])->middleware('jwt.verify');
     });

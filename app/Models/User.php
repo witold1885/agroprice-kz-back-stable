@@ -54,11 +54,16 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    protected $with = ['profile'];
+    protected $with = ['profile', 'favorites'];
 
     public function profile()
     {
         return $this->hasOne(UserProfile::class, 'user_id', 'id');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(UserFavorite::class, 'user_id');
     }
 
     public function getFullnameAttribute()

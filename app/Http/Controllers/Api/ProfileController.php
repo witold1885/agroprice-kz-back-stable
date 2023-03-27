@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Category;
+use App\Models\UserFavorite;
 
 class ProfileController extends Controller
 {
@@ -104,6 +105,23 @@ class ProfileController extends Controller
             $product->update(['status' => $request->status]);
 
             return response()->json(['success' => true, 'product' => $product]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function addFavoriteProduct(Request $request)
+    {
+        try {
+            UserFavorite::updateOrCreate([
+                'user_id' => $request->user_id,
+                'product_id' => $request->product_id,
+            ], [
+                'user_id' => $request->user_id,
+                'product_id' => $request->product_id,
+            ]);
+
+            return response()->json(['success' => true]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
