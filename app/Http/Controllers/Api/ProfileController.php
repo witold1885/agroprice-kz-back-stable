@@ -93,6 +93,29 @@ class ProfileController extends Controller
         }
     }
 
+    public function getProduct($product_id)
+    {
+        try {
+            $product = Product::where('id', $product_id)->with('user')->with('location')->with('productImages')->first();
+
+            if (!$product) {
+                return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
+            }
+
+            $categories = [];
+            $product_categories = ProductCategory::where('product_id', $product->id)->get();
+            foreach ($product_categories as $product_category) {
+                $category = Category::find($product_category->category_id);
+                if ($category) $categories[] = $category;
+            }
+            $product->categories = $categories;
+
+            return response()->json(['success' => true, 'product' => $product]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function changeProductStatus(Request $request)
     {
         try {
@@ -127,24 +150,27 @@ class ProfileController extends Controller
         }
     }
 
-    public function getProduct($product_id)
+    public function getProfileFavorites($user_id, $page = 1)
     {
         try {
-            $product = Product::where('id', $product_id)->with('user')->with('location')->with('productImages')->first();
+            $limit = 20;
+            $offset = ($page - 1) * $limit;
 
-            if (!$product) {
-                return response()->json(['success' => false, 'error' => 'Объявление не найдено']);
+            $user_favorites = UserFavorite::where('user_id', $user_id)->skip($offset)->take($limit)->get();
+            $total = UserFavorite::where('user_id', $user_id)->count();
+
+            $favorites = [];
+
+            foreach ($user_favorites as $user_favorite) {
+                $product = Product::find($user_favorite->product_id);
+                if ($product) {
+                    $favorites[] = $product;
+                }
             }
 
-            $categories = [];
-            $product_categories = ProductCategory::where('product_id', $product->id)->get();
-            foreach ($product_categories as $product_category) {
-                $category = Category::find($product_category->category_id);
-                if ($category) $categories[] = $category;
-            }
-            $product->categories = $categories;
+            $pages = ceil($total / $limit);
 
-            return response()->json(['success' => true, 'product' => $product]);
+            return response()->json(['success' => true, 'favorites' => $favorites, 'pages' => $pages]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }

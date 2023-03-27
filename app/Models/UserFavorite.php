@@ -14,8 +14,6 @@ class UserFavorite extends Model
         'product_id',
     ];
 
-    protected $with = ['product'];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
