@@ -55,18 +55,18 @@ class ProfileController extends Controller
             $offset = ($page - 1) * $limit;
 
             if (!$status) {
-                $products = Product::/*where('user_id', $user_id)->*/with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::/*where('user_id', $user_id)->*/count();
+                $products = Product::where('user_id', $user_id)->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::where('user_id', $user_id)->count();
             }
             elseif ($status == 'published') {
-                $products = Product::/*where('user_id', $user_id)->*/whereIn('status', ['published', 'accepted'])
+                $products = Product::where('user_id', $user_id)->whereIn('status', ['published', 'accepted'])
                     ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::/*where('user_id', $user_id)->*/whereIn('status', ['published', 'accepted'])->count();
+                $total = Product::where('user_id', $user_id)->whereIn('status', ['published', 'accepted'])->count();
             }
             else {
-                $products = Product::/*where('user_id', $user_id)->*/where('status', $status)
+                $products = Product::where('user_id', $user_id)->where('status', $status)
                     ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::/*where('user_id', $user_id)->*/where('status', $status)->count();
+                $total = Product::where('user_id', $user_id)->where('status', $status)->count();
             }
 
             $pages = ceil($total / $limit);
