@@ -162,7 +162,7 @@ class ProfileController extends Controller
             $favorites = [];
 
             foreach ($user_favorites as $user_favorite) {
-                $product = Product::find($user_favorite->product_id);
+                $product = Product::where('id', $user_favorite->product_id)->with('location')->with('productImages')->first();
                 if ($product) {
                     $favorites[] = $product;
                 }
