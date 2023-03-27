@@ -49,6 +49,31 @@ class ProfileController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function setAvatar(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+            $profile = UserProfile::where('user_id', $request->user_id)->first();
+
+            if (!$user || !$profile) {
+                return response()->json(['success' => false, 'error' => 'Профиль пользователя не найден!']);
+            }
+
+            if ($request->avatar) {
+                $extension = $request->avatar->getClientOriginalExtension();                
+                $filename = $user->name . '.' . $extension;
+                $path = $request->avatar->move(storage_path('app/public/users'), $filename);
+                $profile->update(['avatar' => $path]);
+                return response()->json(['success' => true]);
+            }
+            else {
+                return response()->json(['success' => false, 'error' => 'Аватар не загружен!']);
+            }
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function getProfileProducts($user_id, $page = 1, $status = '')
     {
         try {
