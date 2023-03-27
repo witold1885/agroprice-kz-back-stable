@@ -61,13 +61,28 @@ class ProfileController extends Controller
             elseif ($status == 'published') {
                 $products = Product::where('user_id', $user_id)->whereIn('status', ['published', 'accepted'])
                     ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::where('user_id', $user_id)->where('status', $status)->count();
+                $total = Product::where('user_id', $user_id)->whereIn('status', ['published', 'accepted'])->count();
             }
             else {
                 $products = Product::where('user_id', $user_id)->where('status', $status)
                     ->with('location')->with('productImages')->skip($offset)->take($limit)->get();
                 $total = Product::where('user_id', $user_id)->where('status', $status)->count();
             }
+
+            /*$query = Product::where('user_id', $user_id);
+            if ($status) {
+                if ($status == 'published') {
+                    $query->whereIn('status', ['published', 'accepted']);
+                }
+                else {
+                    $query->where('status', $status);
+                }
+            }
+
+            if (isset($_GET['search'])) {
+                $searchValue = $_GET['search'];
+                $query->where('name', 'like')
+            }*/
 
             return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
         } catch (\ErrorException $e) {
