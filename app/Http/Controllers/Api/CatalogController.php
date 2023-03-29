@@ -58,6 +58,9 @@ class CatalogController extends Controller
     {
         try {
             $categories = Category::where('parent_id', 0)->orderBy('order', 'asc')->get();
+            foreach ($categories as $category) {
+                $category->productsCount = ProductCategory::where('category_id', $category->id)->count();
+            }
 
             return response()->json(['success' => true, 'categories' => $categories]);
         } catch (\ErrorException $e) {
