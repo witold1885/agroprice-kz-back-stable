@@ -117,7 +117,7 @@ class CatalogController extends Controller
             $limit = 20;
             $offset = ($page - 1) * $limit;
 
-            $products = Product::whereIn('id', $products_ids)->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+            $products = Product::whereIn('id', $products_ids)->whereIn('status' ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
             foreach ($products as $product) {
                 $product->category_name = '';
