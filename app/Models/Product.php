@@ -18,6 +18,7 @@ class Product extends Model
         'price_negotiable',
         'location_id',
         'status',
+        'views',
     ];
 
     public function user()

@@ -193,4 +193,22 @@ class ProductController extends Controller
         }
     }
 
+    public function increaseProductViews(Request $request)
+    {
+        try {
+            $product = Product::find($request->product_id);
+
+            if (!$product) {
+                return response()->json(['success' => false, 'error' => 'Product not found']);
+            }
+
+            $views = $product->views;
+            $product->update(['views' => $views + 1]);
+
+            return response()->json(['success' => true]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
