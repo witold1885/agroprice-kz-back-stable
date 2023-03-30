@@ -156,7 +156,7 @@ class CatalogController extends Controller
             }
 
             $limit = 20;
-            $offset = ($page - 1) * $limit;
+            $offset = ($request->page - 1) * $limit;
 
             if (!$request->locations) {
                 $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
