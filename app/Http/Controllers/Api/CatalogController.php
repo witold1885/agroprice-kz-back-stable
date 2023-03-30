@@ -145,6 +145,52 @@ class CatalogController extends Controller
         }
     }
 
+    public function getCategoryProductsPost(Request $request)
+    {
+        try {
+            $category_products = ProductCategory::where('category_id', $request->category_id)->get();
+
+            $products_ids = [];
+            foreach ($category_products as $category_product) {
+                $products_ids[] = $category_product->product_id;
+            }
+
+            $limit = 20;
+            $offset = ($page - 1) * $limit;
+
+            if (!$request->locations) {
+                $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+            }
+            else {
+                $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+            }
+
+            foreach ($products as $product) {
+                $product->category_name = '';
+                $product_categories = ProductCategory::where('product_id', $product->id)->get();
+                $main_category_id = 0;
+                foreach ($product_categories as $product_category) {
+                    $category = Category::where('id', $product_category->category_id)->first();
+                    if ($category->parent_id == 0) {
+                        $product->category_name = $category->name;
+                        $main_category_id = $category->id;
+                    }
+                }
+                if ($main_category_id) {
+                    foreach ($product_categories as $product_category) {
+                        $category = Category::where('id', $product_category->category_id)->first();
+                        if ($category->parent_id == $main_category_id) $product->category_name = $category->name;
+                        break;
+                    }
+                }
+            }
+
+            return response()->json(['success' => true, 'products' => $products, 'total' => count($products_ids)]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function getRandomProducts()
     {
         try {

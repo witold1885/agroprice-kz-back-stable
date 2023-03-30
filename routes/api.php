@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::get('menu-categories', [CatalogController::class, 'getMenuCategories']);
         Route::get('child-categories/{parent_id}', [CatalogController::class, 'getChildCategories']);
         Route::get('category-products/{category_id}/{page?}', [CatalogController::class, 'getCategoryProducts']);
+        Route::post('category-products', [CatalogController::class, 'getCategoryProductsPost']);
         Route::get('random-products', [CatalogController::class, 'getRandomProducts']);
     });
 
