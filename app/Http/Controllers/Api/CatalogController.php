@@ -158,14 +158,32 @@ class CatalogController extends Controller
             $limit = 20;
             $offset = ($request->page - 1) * $limit;
 
-            if (!$request->locations) {
+            /*if (!$request->locations) {
                 $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
                 $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->count();
             }
             else {
                 $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
                 $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->count();
+            }*/
+
+            $query = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted']);
+            if ($request->locations) {
+                $query->whereIn('location_id', explode(',', $request->locations));
             }
+            $total = $query->count();
+
+            if (!$request->sort) {
+                $query->orderBy('views', 'desc');
+            }
+            else {
+                if ($request->sort == 'popular') $query->orderBy('views', 'desc');
+                if ($request->sort == 'cheap') $query->orderBy('price', 'asc');
+                if ($request->sort == 'expensive') $query->orderBy('price', 'desc');
+                if ($request->sort == 'new') $query->orderBy('created_at', 'desc');
+            }
+
+            $products = $query->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
             foreach ($products as $product) {
                 $product->category_name = '';
