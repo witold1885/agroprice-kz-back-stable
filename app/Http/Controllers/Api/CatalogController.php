@@ -160,9 +160,11 @@ class CatalogController extends Controller
 
             if (!$request->locations) {
                 $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->count();
             }
             else {
                 $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+                $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->count();
             }
 
             foreach ($products as $product) {
@@ -185,7 +187,7 @@ class CatalogController extends Controller
                 }
             }
 
-            return response()->json(['success' => true, 'products' => $products, 'total' => count($products_ids)]);
+            return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
