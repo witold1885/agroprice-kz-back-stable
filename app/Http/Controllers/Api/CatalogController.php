@@ -242,10 +242,10 @@ class CatalogController extends Controller
         }
     }
 
-    public function getSellerProducts($seller_id)
+    public function getSellerProducts(Request $request)
     {
         try {
-            $products = Product::where('user_id', $seller_id)->with('user')->with('location')->with('productImages')->limit(10)->get();
+            $products = Product::where('user_id', $request->seller_id)->with('user')->with('location')->with('productImages')->limit($request->limit)->get();
 
             foreach ($products as $product) {
                 $product->category_name = '';
