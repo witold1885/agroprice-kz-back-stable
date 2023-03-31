@@ -173,10 +173,10 @@ class CatalogController extends Controller
             }
             $midQuery = $query;
             $total = $midQuery->count();
-            $max_price_product = $midQuery->orderBy('price', 'desc')->first();
-            $max_price = $max_price_product->price;
             $min_price_product = $midQuery->orderBy('price', 'asc')->first();
             $min_price = $min_price_product->price;
+            $max_price_product = $midQuery->orderBy('price', 'desc')->first();
+            $max_price = $max_price_product->price;
 
             if (!$request->sort) {
                 $query->orderBy('views', 'desc');
