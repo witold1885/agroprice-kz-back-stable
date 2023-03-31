@@ -185,7 +185,16 @@ class CatalogController extends Controller
 
             $products = $query->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
+            $max_price = null; $min_price = null;
             foreach ($products as $product) {
+                if (!$max_price) $max_price = $product->price;
+                else {
+                    if ($product->price > $max_price) $max_price = $product->price;
+                }
+                if (!$min_price) $min_price = $product->price;
+                else {
+                    if ($product->price < $min_price) $min_price = $product->price;
+                }
                 $product->category_name = '';
                 $product_categories = ProductCategory::where('product_id', $product->id)->get();
                 $main_category_id = 0;
@@ -205,7 +214,13 @@ class CatalogController extends Controller
                 }
             }
 
-            return response()->json(['success' => true, 'products' => $products, 'total' => $total]);
+            return response()->json([
+                'success' => true,
+                'products' => $products,
+                'total' => $total,
+                'max_price' => $max_price,
+                'min_price' => $min_price
+            ]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }

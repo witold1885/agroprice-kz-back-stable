@@ -115,7 +115,7 @@ class Feedback extends Resource
         return [
             // ID::make()->sortable(),
 
-            BelongsTo::make(__('Пользователь'), 'user', User::class)->searchable(),
+            BelongsTo::make(__('Пользователь'), 'user', User::class)->searchable()->nullable(),
 
             Text::make(__('Тема письма'), 'subject')
                 ->sortable()
