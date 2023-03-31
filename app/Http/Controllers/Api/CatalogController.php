@@ -171,10 +171,11 @@ class CatalogController extends Controller
             if ($request->locations) {
                 $query->whereIn('location_id', explode(',', $request->locations));
             }
-            $total = $query->count();
-            $max_price_product = $query->orderBy('price', 'desc')->first();
+            $midQuery = $query;
+            $total = $midQuery->count();
+            $max_price_product = $midQuery->orderBy('price', 'desc')->first();
             $max_price = $max_price_product->price;
-            $min_price_product = $query->orderBy('price', 'asc')->first();
+            $min_price_product = $midQuery->orderBy('price', 'asc')->first();
             $min_price = $min_price_product->price;
 
             if (!$request->sort) {
