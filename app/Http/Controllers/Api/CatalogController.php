@@ -158,26 +158,24 @@ class CatalogController extends Controller
             $limit = 20;
             $offset = ($request->page - 1) * $limit;
 
-            /*if (!$request->locations) {
-                $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->count();
+            if (!$request->locations) {
+                $min_price_product = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->orderBy('price', 'asc')->first();
+                $min_price = $min_price_product->price;
+                $max_price_product = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->orderBy('price', 'desc')->first();
+                $max_price = $max_price_product->price;
             }
             else {
-                $products = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
-                $total = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->count();
-            }*/
+                $min_price_product = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->orderBy('price', 'asc')->first();
+                $min_price = $min_price_product->price;
+                $max_price_product = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted'])->whereIn('location_id', explode(',', $request->locations))->orderBy('price', 'desc')->first();
+                $max_price = $max_price_product->price;
+            }
 
             $query = Product::whereIn('id', $products_ids)->whereIn('status', ['published', 'accepted']);
             if ($request->locations) {
                 $query->whereIn('location_id', explode(',', $request->locations));
             }
             $total = $query->count();
-            $minQuery = $query;
-            $maxQuery = $query;
-            $min_price_product = $minQuery->orderBy('price', 'asc')->first();
-            $min_price = $min_price_product->price;
-            $max_price_product = $maxQuery->orderBy('price', 'desc')->first();
-            $max_price = $max_price_product->price;
 
             if (!$request->sort) {
                 $query->orderBy('views', 'desc');
