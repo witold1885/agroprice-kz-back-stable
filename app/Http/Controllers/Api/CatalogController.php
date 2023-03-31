@@ -172,6 +172,10 @@ class CatalogController extends Controller
                 $query->whereIn('location_id', explode(',', $request->locations));
             }
             $total = $query->count();
+            $max_price_product = $query->orderBy('price', 'desc')->first();
+            $max_price = $max_price_product->price;
+            $min_price_product = $query->orderBy('price', 'asc')->first();
+            $min_price = $min_price_product->price;
 
             if (!$request->sort) {
                 $query->orderBy('views', 'desc');
@@ -185,16 +189,7 @@ class CatalogController extends Controller
 
             $products = $query->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
-            $max_price = null; $min_price = null;
             foreach ($products as $product) {
-                if (!$max_price) $max_price = $product->price;
-                else {
-                    if ($product->price > $max_price) $max_price = $product->price;
-                }
-                if (!$min_price) $min_price = $product->price;
-                else {
-                    if ($product->price < $min_price) $min_price = $product->price;
-                }
                 $product->category_name = '';
                 $product_categories = ProductCategory::where('product_id', $product->id)->get();
                 $main_category_id = 0;
