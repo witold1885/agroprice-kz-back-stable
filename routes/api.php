@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'info'], function () {
         // Route::get('banners/get', [LocationController::class, 'getBanners']);
         Route::get('banner/{code}', [InfoController::class, 'getBanner']);
+        Route::post('send-feedback', [InfoController::class, 'sendFeedback']);
     });
 
     Route::group(['prefix' => 'product'], function () {
