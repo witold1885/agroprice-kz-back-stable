@@ -75,7 +75,7 @@ class GenerateSitemap extends Command
     {
         foreach (Product::all() as $product) {
             $url = $this->xml_data->addChild('url');
-            $url->addChild('loc', 'https://agroprice.kz/' . $product->url);
+            $url->addChild('loc', 'https://agroprice.kz/product/' . $product->url);
             $url->addChild('changefreq', 'daily');
             $url->addChild('lastmod', date('Y-m-d') . 'T'. date('H:i:s') . '+00:00');
             $url->addChild('priority', '1.0');
