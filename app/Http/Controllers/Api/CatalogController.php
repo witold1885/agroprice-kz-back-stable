@@ -175,6 +175,12 @@ class CatalogController extends Controller
             if ($request->locations) {
                 $query->whereIn('location_id', explode(',', $request->locations));
             }
+            if ($request->filter_min_price) {
+                $query->where('price', '>=', $request->filter_min_price);
+            }
+            if ($request->filter_max_price) {
+                $query->where('price', '<=', $request->filter_max_price);
+            }
             $total = $query->count();
 
             if (!$request->sort) {
@@ -213,8 +219,8 @@ class CatalogController extends Controller
                 'success' => true,
                 'products' => $products,
                 'total' => $total,
-                'max_price' => $max_price,
-                'min_price' => $min_price
+                'min_price' => $min_price,
+                'max_price' => $max_price
             ]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
