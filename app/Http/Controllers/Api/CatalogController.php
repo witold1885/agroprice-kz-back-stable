@@ -10,6 +10,17 @@ use App\Models\Product;
 
 class CatalogController extends Controller
 {
+    public function checkCategory(Request $request)
+    {
+        try {
+            $check = Category::where('url', $request->url)->count();
+
+            return response()->json(['success' => true, 'check' => $check]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function getCategory($url)
     {
         try {
