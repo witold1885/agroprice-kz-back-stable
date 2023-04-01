@@ -20,6 +20,17 @@ use Laravel\Nova\URL;
 
 class ProductController extends Controller
 {
+    public function checkProduct(Request $request)
+    {
+        try {
+            $check = Product::where('url', $request->url)->count();
+
+            return response()->json(['success' => true, 'check' => $check]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function saveProduct(Request $request)
     {
         try {
