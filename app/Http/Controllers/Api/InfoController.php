@@ -42,7 +42,7 @@ class InfoController extends Controller
 
             $feedback = Feedback::create($request->all());
 
-            // Mail::to('info@agroprice.kz')->send(new FeedbackMail($feedback));
+            Mail::to('info@agroprice.kz')->send(new FeedbackMail($feedback));
             Mail::to('wiktor8555@gmail.com')->send(new FeedbackMail($feedback));
 
             foreach (Admin::all() as $admin) {
