@@ -10,6 +10,8 @@ use App\Models\Feedback;
 use App\Models\Admin;
 use Laravel\Nova\Notifications\NovaNotification;
 use Laravel\Nova\URL;
+use App\Mail\FeedbackMail;
+use Mail;
 
 class InfoController extends Controller
 {
@@ -39,6 +41,9 @@ class InfoController extends Controller
             }
 
             $feedback = Feedback::create($request->all());
+
+            // Mail::to('info@agroprice.kz')->send(new FeedbackMail($feedback));
+            Mail::to('wiktor8555@gmail.com')->send(new FeedbackMail($feedback));
 
             foreach (Admin::all() as $admin) {
                 $admin->notify(
