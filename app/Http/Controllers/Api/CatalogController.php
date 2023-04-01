@@ -289,4 +289,16 @@ class CatalogController extends Controller
         }
     }
 
+    public function getSearchResult(Request $request)
+    {
+        try {
+            $products = Product::where('name', 'like', '%' . $request->q . '%')->with('user')->with('location')->with('productImages')->limit(5)->get();
+            $categories = Category::where('name', 'like', '%' . $request->q . '%')->limit(5)->get();
+
+            return response()->json(['success' => true, 'products' => $products, 'categories' => $categories]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
