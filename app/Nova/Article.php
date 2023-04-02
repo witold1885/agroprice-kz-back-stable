@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Image;
 use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Models\Helper;
 
 class Article extends Resource
 {
@@ -149,6 +150,9 @@ class Article extends Resource
 
         $modelObject = $fillFields[0];
         $modelObject->type = 'blog';
+        if (!$modelObject->url) {
+            $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
+        }
 
         return $fillFields;
     }
