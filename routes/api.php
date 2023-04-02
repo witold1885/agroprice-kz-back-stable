@@ -80,3 +80,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('products/del-favorite', [ProfileController::class, 'delFavoriteProduct'])->middleware('jwt.verify');
         Route::get('favorites/all/{user_id}/{page?}', [ProfileController::class, 'getProfileFavorites']);
     });
+
+    Route::group(['prefix' => 'blog'], function () {
+        // Route::get('banners/get', [LocationController::class, 'getBanners']);
+        Route::post('articles', [InfoController::class, 'getBlogArticles']);
+    });

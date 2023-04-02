@@ -60,4 +60,25 @@ class InfoController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
+    public function getBlogArticles(Request $request)
+    {
+        try {
+            $limit = 12;
+            $offset = ($request->page - 1) * $limit;
+
+            $query = Article::where('type', 'blog');
+
+            if ($request->search) {
+                $query->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            $total = $query->count();
+            $articles = $query->skip($offset)->take($limit)->get();
+
+            return response()->json(['success' => true, 'articles' => $articles, 'total' => $total]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 }
