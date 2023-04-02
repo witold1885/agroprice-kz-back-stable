@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Banner;
 use App\Models\Feedback;
 use App\Models\Admin;
+use App\Models\Article;
 use Laravel\Nova\Notifications\NovaNotification;
 use Laravel\Nova\URL;
 use App\Mail\FeedbackMail;

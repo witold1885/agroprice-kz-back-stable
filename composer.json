@@ -28,7 +28,8 @@
         "predis/predis": "^2.1",
         "sereny/nova-permissions": "^1.2",
         "silvanite/novafieldcheckboxes": "^1.2",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "unisharp/laravel-filemanager": "^2.6"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

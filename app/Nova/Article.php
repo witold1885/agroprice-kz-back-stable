@@ -130,7 +130,10 @@ class Article extends Resource
                 ->hideFromIndex(),
 
             NovaTinyMCE::make(__('Содержание'), 'content')
-                ->options(['use_lfm' => true])
+                ->options([
+                    'use_lfm' => true,
+                    'lfm_url' => 'laravel-filemanager'
+                ])
                 ->hideFromIndex(),
 
             Text::make(__('Автор'), 'author')
