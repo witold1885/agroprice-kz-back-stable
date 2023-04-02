@@ -84,4 +84,41 @@ class InfoController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
+    public function getBlogArticle($url)
+    {
+        try {
+            if (!$url) {
+                return response()->json(['success' => false, 'error' => 'Article URL not specified']);
+            }
+
+            $article = Article::where('url', $url)->where('type', 'blog')->first();
+
+            if (!$article) {
+                return response()->json(['success' => false, 'error' => 'Article not found']);
+            }
+
+            return response()->json(['success' => true, 'article' => $article]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function increaseArticleViews(Request $request)
+    {
+        try {
+            $article = Article::find($request->article_id);
+
+            if (!$article) {
+                return response()->json(['success' => false, 'error' => 'Article not found']);
+            }
+
+            $views = $article->views;
+            $article->update(['views' => $views + 1]);
+
+            return response()->json(['success' => true]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 }
