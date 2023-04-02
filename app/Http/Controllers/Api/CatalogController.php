@@ -324,7 +324,7 @@ class CatalogController extends Controller
             }
             $total = $query->count();
 
-            /*if (!$request->sort) {
+            if (!$request->sort) {
                 $query->orderBy('views', 'desc');
             }
             else {
@@ -332,7 +332,7 @@ class CatalogController extends Controller
                 if ($request->sort == 'cheap') $query->orderBy('price', 'asc');
                 if ($request->sort == 'expensive') $query->orderBy('price', 'desc');
                 if ($request->sort == 'new') $query->orderBy('created_at', 'desc');
-            }*/
+            }
 
             $products = $query->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
 
