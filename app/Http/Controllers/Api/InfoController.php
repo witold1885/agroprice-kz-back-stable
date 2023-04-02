@@ -77,7 +77,9 @@ class InfoController extends Controller
             $total = $query->count();
             $articles = $query->skip($offset)->take($limit)->get();
 
-            return response()->json(['success' => true, 'articles' => $articles, 'total' => $total]);
+            $lastArticles = Article::where('type', 'blog')->orderBy('created_at', 'desc')->limit(4)->get();
+
+            return response()->json(['success' => true, 'articles' => $articles, 'lastArticles' => $lastArticles, 'total' => $total]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
