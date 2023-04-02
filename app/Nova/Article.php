@@ -130,6 +130,7 @@ class Article extends Resource
                 ->hideFromIndex(),
 
             NovaTinyMCE::make(__('Содержание'), 'content')
+                ->options(['use_lfm' => true])
                 ->hideFromIndex(),
 
             Text::make(__('Автор'), 'author')
@@ -151,7 +152,7 @@ class Article extends Resource
         $modelObject = $fillFields[0];
         $modelObject->type = 'blog';
         if (!$modelObject->url) {
-            $modelObject->url = Helper::transliterate($modelObject->name, 'ru');
+            $modelObject->url = Helper::transliterate($modelObject->title, 'ru');
         }
 
         return $fillFields;
