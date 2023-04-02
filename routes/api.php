@@ -48,7 +48,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('category-products', [CatalogController::class, 'getCategoryProductsPost']);
         Route::get('random-products', [CatalogController::class, 'getRandomProducts']);
         Route::post('seller-products', [CatalogController::class, 'getSellerProducts']);
-        Route::post('search', [CatalogController::class, 'getSearchResult']);
+        Route::post('search-result', [CatalogController::class, 'getSearchResult']);
+        Route::post('search-products', [CatalogController::class, 'getSearchProducts']);
     });
 
     Route::group(['prefix' => 'locations'], function () {

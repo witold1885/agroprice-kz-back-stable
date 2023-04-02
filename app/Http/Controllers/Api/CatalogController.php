@@ -312,4 +312,58 @@ class CatalogController extends Controller
         }
     }
 
+    public function getSearchProducts(Request $request)
+    {
+        try {
+            $limit = 20;
+            $offset = ($request->page - 1) * $limit;
+
+            $query = Product::where('name', 'like', '%' . $request->q . '%')->whereIn('status', ['published', 'accepted']);
+            if ($request->locations) {
+                $query->whereIn('location_id', explode(',', $request->locations));
+            }
+            $total = $query->count();
+
+            /*if (!$request->sort) {
+                $query->orderBy('views', 'desc');
+            }
+            else {
+                if ($request->sort == 'popular') $query->orderBy('views', 'desc');
+                if ($request->sort == 'cheap') $query->orderBy('price', 'asc');
+                if ($request->sort == 'expensive') $query->orderBy('price', 'desc');
+                if ($request->sort == 'new') $query->orderBy('created_at', 'desc');
+            }*/
+
+            $products = $query->with('user')->with('location')->with('productImages')->skip($offset)->take($limit)->get();
+
+            foreach ($products as $product) {
+                $product->category_name = '';
+                $product_categories = ProductCategory::where('product_id', $product->id)->get();
+                $main_category_id = 0;
+                foreach ($product_categories as $product_category) {
+                    $category = Category::where('id', $product_category->category_id)->first();
+                    if ($category->parent_id == 0) {
+                        $product->category_name = $category->name;
+                        $main_category_id = $category->id;
+                    }
+                }
+                if ($main_category_id) {
+                    foreach ($product_categories as $product_category) {
+                        $category = Category::where('id', $product_category->category_id)->first();
+                        if ($category->parent_id == $main_category_id) $product->category_name = $category->name;
+                        break;
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'products' => $products,
+                'total' => $total
+            ]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
 }
