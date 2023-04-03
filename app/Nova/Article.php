@@ -7,6 +7,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Image;
 use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
@@ -135,6 +136,9 @@ class Article extends Resource
                     'lfm_url' => 'laravel-filemanager'
                 ])
                 ->hideFromIndex(),
+
+            Date::make(__('Дата'), 'date')
+                ->sortable(),
 
             Textarea::make(__('Meta Description'), 'meta_description')
                 ->hideFromIndex(),
