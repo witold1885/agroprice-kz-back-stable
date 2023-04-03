@@ -15,7 +15,7 @@ class Article extends Model
         'url',
         'image',
         'content',
-        'author',
+        'date',
         'views',
         'meta_description',
         'meta_keywords',

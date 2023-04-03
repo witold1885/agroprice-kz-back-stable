@@ -115,7 +115,7 @@ class Article extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            ID::make()->sortable(),
+            // ID::make()->sortable(),
 
             Text::make(__('Название'), 'title')
                 ->sortable()
@@ -135,9 +135,6 @@ class Article extends Resource
                     'lfm_url' => 'laravel-filemanager'
                 ])
                 ->hideFromIndex(),
-
-            Text::make(__('Автор'), 'author')
-                ->sortable(),
 
             Textarea::make(__('Meta Description'), 'meta_description')
                 ->hideFromIndex(),
