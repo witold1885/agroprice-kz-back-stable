@@ -138,7 +138,7 @@ class Article extends Resource
                 ->hideFromIndex(),
 
             Date::make(__('Дата'), 'date')
-                ->sortable(),
+                ->sortable()->nullable(),
 
             Textarea::make(__('Meta Description'), 'meta_description')
                 ->hideFromIndex(),

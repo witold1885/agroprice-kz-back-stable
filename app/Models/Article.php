@@ -20,4 +20,8 @@ class Article extends Model
         'meta_description',
         'meta_keywords',
     ];
+    
+    protected $casts = [
+        'date' => 'date'
+    ];
 }
