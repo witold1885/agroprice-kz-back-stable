@@ -62,10 +62,21 @@ class InfoController extends Controller
         }
     }
 
+    public function getLastBlogArticles()
+    {
+        try {
+            $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(10)->get();
+
+            return response()->json(['success' => true, 'lastArticles' => $lastArticles]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
     public function getBlogArticles(Request $request)
     {
         try {
-            $limit = 12;
+            $limit = 20;
             $offset = ($request->page - 1) * $limit;
 
             $query = Article::where('type', 'blog');
@@ -77,7 +88,7 @@ class InfoController extends Controller
             $total = $query->count();
             $articles = $query->skip($offset)->take($limit)->get();
 
-            $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(4)->get();
+            $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(5)->get();
 
             return response()->json(['success' => true, 'articles' => $articles, 'lastArticles' => $lastArticles, 'total' => $total]);
         } catch (\ErrorException $e) {

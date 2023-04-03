@@ -84,6 +84,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::group(['prefix' => 'blog'], function () {
         // Route::get('banners/get', [LocationController::class, 'getBanners']);
         Route::post('articles', [InfoController::class, 'getBlogArticles']);
+        Route::get('last-articles', [InfoController::class, 'getLastBlogArticles']);
         Route::get('article/{url}', [InfoController::class, 'getBlogArticle']);
         Route::post('increase-views', [InfoController::class, 'increaseArticleViews']);
     });
