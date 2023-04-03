@@ -86,7 +86,7 @@ class InfoController extends Controller
             }
 
             $total = $query->count();
-            $articles = $query->skip($offset)->take($limit)->get();
+            $articles = $query->orderBy('date', 'desc')->skip($offset)->take($limit)->get();
 
             $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(5)->get();
 

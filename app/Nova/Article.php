@@ -11,6 +11,7 @@ use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Helper;
+use Carbon\Carbon;
 
 class Article extends Resource
 {
@@ -138,6 +139,7 @@ class Article extends Resource
                 ->hideFromIndex(),
 
             Date::make(__('Дата'), 'date')
+                ->withMeta(['value' => Carbon::now()])
                 ->sortable()->nullable(),
 
             Textarea::make(__('Meta Description'), 'meta_description')
