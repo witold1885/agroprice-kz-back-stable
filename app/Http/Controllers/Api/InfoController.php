@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Banner;
 use App\Models\Feedback;
 use App\Models\Admin;
+use App\Models\BlogCategory;
 use App\Models\Article;
 use Laravel\Nova\Notifications\NovaNotification;
 use Laravel\Nova\URL;
@@ -57,6 +58,17 @@ class InfoController extends Controller
             }
 
             return response()->json(['success' => true]);
+        } catch (\ErrorException $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getBlogCategories()
+    {
+        try {
+            $categories = BlogCategory::all();
+            
+            return response()->json(['success' => true, 'categories' => $categories]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
