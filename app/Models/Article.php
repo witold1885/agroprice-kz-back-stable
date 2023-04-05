@@ -11,6 +11,7 @@ class Article extends Model
 
     protected $fillable = [
         'type',
+        'category_id',
         'title',
         'url',
         'image',
@@ -20,8 +21,13 @@ class Article extends Model
         'meta_description',
         'meta_keywords',
     ];
-    
+
     protected $casts = [
         'date' => 'date'
     ];
+
+    public function blogCategory()
+    {
+        return $this->belongsTo(BlogCategory::class, 'category_id');
+    }
 }

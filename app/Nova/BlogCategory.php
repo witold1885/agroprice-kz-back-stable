@@ -5,15 +5,9 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Image;
-use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
-use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use App\Models\Helper;
-use Carbon\Carbon;
 
-class Article extends Resource
+class BlogCategory extends Resource
 {
     /**
      * Get the displayable label of the resource.
@@ -22,7 +16,7 @@ class Article extends Resource
      */
     public static function label()
     {
-        return __('Статьи');
+        return __('Категории блога');
     }
 
     /**
@@ -32,7 +26,7 @@ class Article extends Resource
      */
     public static function singularLabel()
     {
-        return __('Статья');
+        return __('Категория блога');
     }
 
     /**
@@ -42,7 +36,7 @@ class Article extends Resource
      */
     public static function genitiveLabel()
     {
-        return __('Статьи');
+        return __('Категории блога');
     }
     
     /**
@@ -52,7 +46,7 @@ class Article extends Resource
      */
     public static function accusativeLabel()
     {
-        return __('Статью');
+        return __('Категорию блога');
     }
     
     /**
@@ -62,7 +56,7 @@ class Article extends Resource
      */
     public static function genitivePluralLabel()
     {
-        return __('Статей');
+        return __('Категорий блога');
     }
     
     /**
@@ -72,7 +66,7 @@ class Article extends Resource
      */
     public static function createButtonLabel()
     {
-        return __('Создать статью');
+        return __('Создать категорию блога');
     }
 
     /**
@@ -82,22 +76,22 @@ class Article extends Resource
      */
     public static function updateButtonLabel()
     {
-        return __('Обновить статью');
+        return __('Обновить категорию блога');
     }
 
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Article>
+     * @var class-string<\App\Models\BlogCategory>
      */
-    public static $model = \App\Models\Article::class;
+    public static $model = \App\Models\BlogCategory::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'title';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -105,7 +99,7 @@ class Article extends Resource
      * @var array
      */
     public static $search = [
-        'title',
+        'name',
     ];
 
     /**
@@ -119,51 +113,11 @@ class Article extends Resource
         return [
             // ID::make()->sortable(),
 
-            BelongsTo::make(__('Категория блога'), 'blogCategory', BlogCategory::class)->searchable()->nullable(),
-
-            Text::make(__('Название'), 'title')
+            Text::make(__('Название'), 'name')
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Text::make(__('URL'), 'url')
-                ->hideFromIndex(),
-
-            Image::make('Изображение', 'image')
-                ->disk('public')
-                ->path('blog')
-                ->hideFromIndex(),
-
-            NovaTinyMCE::make(__('Содержание'), 'content')
-                ->options([
-                    'use_lfm' => true,
-                    'lfm_url' => 'laravel-filemanager'
-                ])
-                ->hideFromIndex(),
-
-            Date::make(__('Дата'), 'date')
-                ->withMeta(['value' => Carbon::now()])
-                ->sortable()->nullable(),
-
-            Textarea::make(__('Meta Description'), 'meta_description')
-                ->hideFromIndex(),
-
-            Textarea::make(__('Meta Keywords'), 'meta_keywords')
-                ->hideFromIndex(),
-
         ];
-    }
-
-    protected static function fillFields(NovaRequest $request, $model, $fields)
-    {
-        $fillFields = parent::fillFields($request, $model, $fields);
-
-        $modelObject = $fillFields[0];
-        $modelObject->type = 'blog';
-        if (!$modelObject->url) {
-            $modelObject->url = Helper::transliterate($modelObject->title, 'ru');
-        }
-
-        return $fillFields;
     }
 
     /**
