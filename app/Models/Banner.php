@@ -29,6 +29,8 @@ class Banner extends Model
                 $activeImages[] = [
                     'num'  => $i + 1,
                     'path' => $image->path,
+                    'path_md' => $image->path_md,
+                    'path_sm' => $image->path_sm,
                     'link' => $image->link,
                     'show' => $i === 0
                 ];
