@@ -104,9 +104,11 @@ class InfoController extends Controller
             $total = $query->count();
             $articles = $query->orderBy('date', 'desc')->skip($offset)->take($limit)->get();
 
+            $pages = ceil($total / $limit);
+
             $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(5)->get();
 
-            return response()->json(['success' => true, 'articles' => $articles, 'lastArticles' => $lastArticles, 'total' => $total]);
+            return response()->json(['success' => true, 'articles' => $articles, 'lastArticles' => $lastArticles, 'pages' => $pages]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
