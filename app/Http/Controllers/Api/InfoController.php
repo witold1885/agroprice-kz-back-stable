@@ -67,7 +67,7 @@ class InfoController extends Controller
     {
         try {
             $categories = BlogCategory::all();
-            
+
             return response()->json(['success' => true, 'categories' => $categories]);
         } catch (\ErrorException $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
@@ -95,6 +95,10 @@ class InfoController extends Controller
 
             if ($request->search) {
                 $query->where('title', 'like', '%' . $request->search . '%');
+            }
+
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
             }
 
             $total = $query->count();
