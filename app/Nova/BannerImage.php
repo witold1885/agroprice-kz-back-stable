@@ -5,6 +5,7 @@ namespace App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -117,9 +118,25 @@ class BannerImage extends Resource
         return [
             // ID::make()->sortable(),
 
-            Image::make('Файл', 'path')
+            Image::make('Файл (1200х436)', 'path')
                 ->disk('public')
                 ->path('banners'),
+
+            Image::make('Файл (688х362)', 'path_md')
+                ->disk('public')
+                ->path('banners')
+                ->hideFromIndex(),
+
+            Image::make('Файл (280х216)', 'path_sm')
+                ->disk('public')
+                ->path('banners')
+                ->hideFromIndex(),
+
+            Text::make(__('Текст на кнопке'), 'button_text')
+                ->hideFromIndex(),
+
+            Text::make(__('Ссылка'), 'link')
+                ->hideFromIndex(),
 
             Boolean::make(__('Активно'), 'active')->default(true),
 

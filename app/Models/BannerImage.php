@@ -12,6 +12,9 @@ class BannerImage extends Model
     protected $fillable = [
         'banner_id',
         'path',
+        'path_md',
+        'path_sm',
+        'button_text',
         'link',
         'active',
         'date_from',
