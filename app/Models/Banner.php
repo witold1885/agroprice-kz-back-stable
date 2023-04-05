@@ -31,6 +31,7 @@ class Banner extends Model
                     'path' => $image->path,
                     'path_md' => $image->path_md,
                     'path_sm' => $image->path_sm,
+                    'button_text' => $image->button_text,
                     'link' => $image->link,
                     'show' => $i === 0
                 ];
