@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Article;
 
 class GenerateSitemap extends Command
 {
@@ -47,7 +48,8 @@ class GenerateSitemap extends Command
     {
         $this->addMainPage();
         $this->addCategories();
-        // $this->addProducts();
+        $this->addProducts();
+        $this->addBlogArticles();
         file_put_contents(config('app.spa_dist') . 'sitemap.xml', $this->xml_data->asXML());
     }
 
@@ -76,6 +78,17 @@ class GenerateSitemap extends Command
         foreach (Product::all() as $product) {
             $url = $this->xml_data->addChild('url');
             $url->addChild('loc', 'https://agroprice.kz/product/' . $product->url);
+            $url->addChild('changefreq', 'daily');
+            $url->addChild('lastmod', date('Y-m-d') . 'T'. date('H:i:s') . '+00:00');
+            $url->addChild('priority', '1.0');
+        }
+    }
+
+    private function addBlogArticles()
+    {
+        foreach (Article::where('type', 'blog')->get() as $article) {
+            $url = $this->xml_data->addChild('url');
+            $url->addChild('loc', 'https://agroprice.kz/blog/' . $article->url);
             $url->addChild('changefreq', 'daily');
             $url->addChild('lastmod', date('Y-m-d') . 'T'. date('H:i:s') . '+00:00');
             $url->addChild('priority', '1.0');
