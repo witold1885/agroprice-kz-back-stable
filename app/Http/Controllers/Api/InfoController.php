@@ -65,7 +65,7 @@ class InfoController extends Controller
     public function getLastBlogArticles()
     {
         try {
-            $lastArticles = Article::where('type', 'blog')->orderBy('date', 'desc')->limit(10)->get();
+            $lastArticles = Article::select('id', 'type', 'title', 'url', 'image', 'date', 'views')->where('type', 'blog')->orderBy('date', 'desc')->limit(10)->get();
 
             return response()->json(['success' => true, 'lastArticles' => $lastArticles]);
         } catch (\ErrorException $e) {
