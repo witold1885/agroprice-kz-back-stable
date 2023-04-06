@@ -90,7 +90,7 @@ class CatalogController extends Controller
                 $subcategories = Category::select('id', 'parent_id', 'name', 'url')->where('parent_id', $category->id)->orderBy('order', 'asc')->get();
                 foreach ($subcategories as $subcategory) {
                     $menu_subcategory = $subcategory;
-                    $subsubcategories = Category::select('id', 'parent_id', 'name', 'url')->where('parent_id', $subcategory->id)->orderBy('order', 'asc')->get();
+                    $subsubcategories = Category::select('id', 'parent_id', 'name', 'url')->where('parent_id', $subcategory->id)->orderBy('order', 'asc')->limit(5)->get();
                     $menu_subcategory->subsubcategories = $subsubcategories;
                     $menu_subcategories[] = $menu_subcategory;
                 }
