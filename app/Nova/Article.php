@@ -142,7 +142,8 @@ class Article extends Resource
                 ->hideFromIndex(),
 
             Date::make(__('Дата'), 'date')
-                ->withMeta(['value' => Carbon::now()])
+                ->default(now()->format('Y-m-d'))
+                // ->withMeta(['value' => Carbon::now()])
                 ->sortable()->nullable(),
 
             Textarea::make(__('Meta Description'), 'meta_description')
