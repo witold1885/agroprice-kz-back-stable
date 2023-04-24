@@ -86,5 +86,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::post('articles', [InfoController::class, 'getBlogArticles']);
         Route::get('last-articles', [InfoController::class, 'getLastBlogArticles']);
         Route::get('article/{url}', [InfoController::class, 'getBlogArticle']);
-        Route::post('increase-views', [InfoController::class, 'increaseArticleViews']);
+        Route::post('increase-views', [InfoController::class, 'increaseBlogArticleViews']);
+    });
+
+    Route::group(['prefix' => 'news'], function () {
+        // Route::get('categories', [InfoController::class, 'getBlogCategories']);
+        Route::post('articles', [InfoController::class, 'getNewsArticles']);
+        Route::get('last-articles', [InfoController::class, 'getLastNewsArticles']);
+        Route::get('article/{url}', [InfoController::class, 'getNewsArticle']);
+        Route::post('increase-views', [InfoController::class, 'increaseNewsArticleViews']);
     });
