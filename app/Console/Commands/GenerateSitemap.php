@@ -51,6 +51,7 @@ class GenerateSitemap extends Command
         $this->addProducts();
         $this->addBlogArticles();
         file_put_contents(config('app.spa_dist') . 'sitemap.xml', $this->xml_data->asXML());
+        file_put_contents(str_replace('dist', 'public', config('app.spa_dist')) . 'sitemap.xml', $this->xml_data->asXML());
     }
 
     private function addMainPage()
